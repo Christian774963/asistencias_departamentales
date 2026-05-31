@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habitaciones | Hotel Gestión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #4F46E5; --color-primary-light: #EEF2FF; --color-primary-mid: #C7D2FE;
+            --color-bg: #F3F4F6; --color-surface: #FFFFFF; --color-border: rgba(0,0,0,0.08);
+            --color-border-hover: rgba(79,70,229,0.35); --color-text: #111827;
+            --color-muted: #6B7280; --color-subtle: #9CA3AF; --color-danger: #DC2626;
+            --color-danger-light: #FEF2F2; --color-success: #16A34A; --color-warning: #EA580C;
+            --sidebar-w: 230px; --topbar-h: 52px; --radius: 10px; --radius-sm: 7px;
+            --shadow: 0 1px 4px rgba(0,0,0,0.07); --shadow-hover: 0 6px 20px rgba(79,70,229,0.12);
+            --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Nunito', sans-serif; background: var(--color-bg); color: var(--color-text); min-height: 100vh; display: flex; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* SIDEBAR */
+        .sidebar-container { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--color-surface); border-right: 1px solid var(--color-border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 100; transition: transform var(--transition); }
+        .sidebar-brand { padding: 18px 16px 14px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 10px; }
+        .brand-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--color-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 17px; flex-shrink: 0; }
+        .brand-name { font-size: 14px; font-weight: 700; color: var(--color-text); }
+        .brand-sub { font-size: 10px; color: var(--color-muted); }
+        .sidebar-nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+        .nav-section-label { font-size: 10px; color: var(--color-subtle); padding: 8px 8px 4px; letter-spacing: 0.9px; text-transform: uppercase; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--radius-sm); cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; color: var(--color-muted); font-size: 13px; font-weight: 600; position: relative; transition: background var(--transition), color var(--transition); animation: slideRight 0.35s both; text-decoration: none; }
+        .nav-item i { font-size: 18px; width: 22px; text-align: center; flex-shrink: 0; transition: transform 0.2s; }
+        .nav-item:hover { background: var(--color-bg); color: var(--color-text); }
+        .nav-item:hover i { transform: scale(1.15); }
+        .nav-item.active { background: var(--color-primary-light); color: var(--color-primary); font-weight: 700; }
+        .nav-item.active i { color: var(--color-primary); }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; background: var(--color-primary); border-radius: 0 3px 3px 0; }
+        .sidebar-footer { padding: 12px 10px; border-top: 1px solid var(--color-border); display: flex; flex-direction: column; gap: 6px; }
+        .user-card { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--transition); }
+        .user-card:hover { background: var(--color-bg); }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+        .user-name { font-size: 12px; font-weight: 700; color: var(--color-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-role { font-size: 10px; color: var(--color-muted); }
+        .logout { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: transparent; color: var(--color-danger); font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; text-decoration: none; transition: background var(--transition), border-color var(--transition); }
+        .logout:hover { background: var(--color-danger-light); border-color: #fca5a5; }
+
+        /* MAIN */
+        .main-wrapper { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; transition: margin-left var(--transition); }
+        .topbar { height: var(--topbar-h); background: var(--color-surface); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; padding: 0 22px; gap: 12px; position: sticky; top: 0; z-index: 50; }
+        .hamburger { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text); padding: 0.5rem; }
+        .topbar-title { font-size: 14px; font-weight: 700; color: var(--color-text); flex: 1; }
+        .main-body { padding: 22px; flex: 1; }
+
+        /* ROOMS TABLE */
+        .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 18px; margin-bottom: 18px; animation: fadeUp 0.4s both; }
+        .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--color-border); }
+        .filter-group label { display: block; font-size: 10px; color: var(--color-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .filter-group input, .filter-group select { width: 100%; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 12px; background: #fff; transition: border-color 0.2s; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--color-primary); }
+        .filter-actions { display: flex; gap: 8px; align-items: flex-end; }
+        .btn { padding: 8px 14px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; text-decoration: none; }
+        .btn-primary { background: var(--color-primary); color: #fff; }
+        .btn-primary:hover { background: #4338CA; }
+        .btn-secondary { background: var(--color-surface); color: var(--color-muted); border: 1px solid var(--color-border); }
+        .btn-secondary:hover { background: var(--color-bg); color: var(--color-text); }
+        .btn-danger { background: var(--color-danger); color: #fff; }
+        .btn-warning { background: var(--color-warning); color: #fff; }
+        .btn-sm { padding: 5px 10px; font-size: 11px; }
+        .table-container { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        thead { background: var(--color-bg); }
+        th { padding: 12px 14px; text-align: left; font-weight: 700; color: var(--color-muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+        td { padding: 12px 14px; border-bottom: 1px solid var(--color-border); color: var(--color-text); }
+        tbody tr:hover { background: var(--color-bg); }
+        .badge { padding: 3px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-success { background: #DCFCE7; color: #166534; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .actions { display: flex; gap: 4px; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 4px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+        .pagination a, .pagination span { padding: 6px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); text-decoration: none; color: var(--color-muted); font-weight: 600; font-size: 11px; transition: all 0.2s; }
+        .pagination a:hover { background: var(--color-bg); color: var(--color-text); border-color: var(--color-primary); }
+        .pagination .active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+        .pagination .disabled { opacity: 0.5; cursor: not-allowed; }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--color-muted); }
+        .alert { padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 16px; font-weight: 600; font-size: 12px; display: none; animation: slideIn 0.3s ease; }
+        .alert.show { display: block; }
+        .alert-success { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+        .alert-error { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+        /* MODALS */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.2s ease; }
+        .modal.active { display: flex; }
+        .modal-content { background: #fff; padding: 1.5rem; border-radius: var(--radius); width: 100%; max-width: 420px; box-shadow: var(--shadow-hover); animation: slideUp 0.3s ease; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-border); }
+        .modal-header h3 { font-size: 14px; font-weight: 700; color: var(--color-text); }
+        .modal-close { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--color-muted); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .modal-close:hover { background: var(--color-bg); color: var(--color-text); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 4px; color: var(--color-text); font-size: 12px; }
+        .form-group input, .form-group select { width: 100%; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 12px; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--color-primary); }
+        .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border); }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+            .hamburger { display: block; }
+            .sidebar-container { transform: translateX(-100%); }
+            .sidebar-container.open { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+            .filters { grid-template-columns: 1fr; }
+            .filter-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+            table { font-size: 11px; }
+            th, td { padding: 10px 12px; }
+            .actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<!-- ✅ SIDEBAR CORREGIDO - USAR EN: menu-admin.html, rooms.html, users.html -->
+<aside class="sidebar-container" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon"><i class="ti ti-shield-check"></i></div>
+        <div>
+            <div class="brand-name">Hotel Gestión</div>
+            <div class="brand-sub">Sistema administrativo</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Módulos</div>
+
+        <!-- Dashboard -->
+        <a href="/admin/dashboard" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active'">
+            <i class="ti ti-dashboard"></i><span>Dashboard</span>
+        </a>
+
+        <!-- Habitaciones -->
+        <a href="/admin/rooms" class="nav-item" th:classappend="${activePage == 'rooms'} ? 'active'">
+            <i class="ti ti-building"></i>
+            <span>Habitaciones</span>
+            <span class="nav-badge" th:text="${totalRooms}">0</span>
+        </a>
+
+        <!-- Usuarios -->
+        <a href="/admin/users" class="nav-item" th:classappend="${activePage == 'users'} ? 'active'">
+            <i class="ti ti-users"></i>
+            <span>Usuarios</span>
+            <span class="nav-badge" th:text="${totalUsers}">0</span>
+        </a>
+
+        <!-- Reservas -->
+        <a href="/admin/reservations" class="nav-item" th:classappend="${activePage == 'reservations'} ? 'active'">
+            <i class="ti ti-calendar-event"></i><span>Reservas</span>
+        </a>
+
+        <!-- Estadías -->
+        <a href="/admin/stays" class="nav-item" th:classappend="${activePage == 'stays'} ? 'active'">
+            <i class="ti ti-bed"></i><span>Estadías</span>
+        </a>
+
+        <!-- Servicios -->
+        <a href="/admin/services" class="nav-item" th:classappend="${activePage == 'services'} ? 'active'">
+            <i class="ti ti-receipt"></i><span>Servicios extra</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="user-card">
+            <div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail, 0, 1))}">A</div>
+            <div style="flex:1;min-width:0;">
+                <div class="user-name" th:text="${userEmail}">admin@hotel.com</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+        <a href="/logout" class="logout"><i class="ti ti-logout"></i><span>Cerrar sesión</span></a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-wrapper">
+    <header class="topbar">
+        <button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title">🚪 Mantenimiento de Habitaciones</span>
+    </header>
+    <main class="main-body">
+        <div th:if="${msg}" class="alert alert-success show" id="alertBox" th:text="${msg}"></div>
+        <div th:if="${error}" class="alert alert-error show" th:text="${error}"></div>
+
+        <div class="card">
+            <form method="get" class="filters">
+                <div class="filter-group">
+                    <label>🔢 Número</label>
+                    <input type="text" name="numero" placeholder="Ej: 101" th:value="${numero}">
+                </div>
+                <div class="filter-group">
+                    <label>🏷️ Tipo</label>
+                    <select name="tipo">
+                        <option value="">Todos</option>
+                        <option value="Individual" th:selected="${tipo=='Individual'}">Individual</option>
+                        <option value="Doble" th:selected="${tipo=='Doble'}">Doble</option>
+                        <option value="Suite" th:selected="${tipo=='Suite'}">Suite</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>📊 Estado</label>
+                    <select name="estado">
+                        <option value="">Todos</option>
+                        <option value="Disponible" th:selected="${estado=='Disponible'}">🟢 Disponible</option>
+                        <option value="Ocupada" th:selected="${estado=='Ocupada'}">🔴 Ocupada</option>
+                        <option value="Mantenimiento" th:selected="${estado=='Mantenimiento'}">🟡 Mantenimiento</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+                    <a href="/admin/rooms" class="btn btn-secondary">↺ Limpiar</a>
+                </div>
+            </form>
+
+            <div style="text-align: right; margin-bottom: 12px;">
+                <button type="button" onclick="openCreateModal()" class="btn btn-primary">+ Nueva</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>ID</th><th>Número</th><th>Tipo</th><th>Precio</th><th>Estado</th><th style="text-align:center;">Acciones</th></tr></thead>
+                    <tbody>
+                    <tr th:each="r : ${rooms.content}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.numero}" style="font-weight:600;"></td>
+                        <td th:text="${r.tipo}"></td>
+                        <td th:text="'$' + ${#numbers.formatDecimal(r.precioNoche,1,2)}" style="color:var(--color-primary);font-weight:600;"></td>
+                        <td>
+                            <span th:if="${r.estado=='Disponible'}" class="badge badge-success">🟢 Disponible</span>
+                            <span th:if="${r.estado=='Ocupada'}" class="badge badge-danger">🔴 Ocupada</span>
+                            <span th:if="${r.estado=='Mantenimiento'}" class="badge badge-warning">🟡 Mantenimiento</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <div class="actions" style="justify-content:center;">
+                                <button type="button" class="btn btn-warning btn-sm" th:data-id="${r.id}" th:data-numero="${r.numero}" th:data-tipo="${r.tipo}" th:data-precio="${r.precioNoche}" th:data-estado="${r.estado}" onclick="openEditModalFromData(this)">✏️</button>
+                                <button type="button" class="btn btn-danger btn-sm" th:data-id="${r.id}" th:data-numero="${r.numero}" th:data-tipo="${r.tipo}" onclick="openDeleteModalFromData(this)">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${rooms.empty}"><td colspan="6" class="empty-state"><i class="ti ti-building" style="font-size:2rem;margin-bottom:8px;"></i><p><strong>No se encontraron habitaciones</strong></p></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" th:if="${totalPages > 1}">
+                <a th:href="@{/admin/rooms(page=0, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==0}?'disabled':''" th:if="${currentPage>0}">«</a>
+                <a th:href="@{/admin/rooms(page=${currentPage-1}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==0}?'disabled':''" th:if="${currentPage>0}">‹</a>
+                <span th:each="i : ${#numbers.sequence(0, totalPages-1)}">
+                        <a th:if="${totalPages<=7 || i==0 || i==totalPages-1 || (i>=currentPage-1 && i<=currentPage+1)}" th:href="@{/admin/rooms(page=${i}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:text="${i+1}" th:classappend="${i==currentPage}?'active':''"></a>
+                        <span th:if="${i==1 && currentPage>3 && totalPages>7}">...</span>
+                        <span th:if="${i==totalPages-2 && currentPage<totalPages-4 && totalPages>7}">...</span>
+                    </span>
+                <a th:href="@{/admin/rooms(page=${currentPage+1}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==totalPages-1}?'disabled':''" th:if="${currentPage<totalPages-1}">›</a>
+                <a th:href="@{/admin/rooms(page=${totalPages-1}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==totalPages-1}?'disabled':''" th:if="${currentPage<totalPages-1}">»</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL CREAR/EDITAR -->
+<div id="modalForm" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">✨ Nueva Habitación</h3>
+            <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <form th:action="@{/admin/rooms/save}" th:object="${room}" method="post" id="roomForm">
+            <input type="hidden" th:field="*{id}" id="roomId">
+            <div class="form-group"><label>🔢 Número *</label><input type="text" th:field="*{numero}" placeholder="Ej: 101" pattern="[0-9A-Za-z]+" required maxlength="10"></div>
+            <div class="form-group"><label>🏷️ Tipo *</label>
+                <select th:field="*{tipo}" required>
+                    <option value="">-- Seleccionar --</option>
+                    <optgroup label="Individuales">
+                        <option value="Individual Estándar">Individual Estándar</option>
+                        <option value="Individual Deluxe">Individual Deluxe</option>
+                        <option value="Individual Económica">Individual Económica</option>
+                    </optgroup>
+                    <optgroup label="Dobles">
+                        <option value="Doble Estándar">Doble Estándar</option>
+                        <option value="Doble Deluxe">Doble Deluxe</option>
+                    </optgroup>
+                    <optgroup label="Suites">
+                        <option value="Suite Junior">Suite Junior</option>
+                        <option value="Suite Ejecutiva">Suite Ejecutiva</option>
+                        <option value="Suite Presidencial">Suite Presidencial</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group"><label>💰 Precio (USD) *</label><input type="number" step="0.01" min="0" th:field="*{precioNoche}" placeholder="0.00" required></div>
+            <div class="form-group"><label>📊 Estado *</label>
+                <select th:field="*{estado}" required>
+                    <option value="Disponible">🟢 Disponible</option>
+                    <option value="Ocupada">🔴 Ocupada</option>
+                    <option value="Mantenimiento">🟡 Mantenimiento</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">💾 Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL ELIMINAR -->
+<div id="modalDelete" class="modal">
+    <div class="modal-content" style="text-align:center;max-width:380px;">
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">⚠️</div>
+        <h3 style="margin-bottom:0.5rem;">¿Eliminar?</h3>
+        <p style="color:var(--color-muted);margin:0.5rem 0;font-size:12px;">Esta acción no se puede deshacer.<br><strong id="deleteRoomInfo"></strong></p>
+        <form id="deleteForm" method="get" style="display:flex;gap:8px;justify-content:center;margin-top:1rem;">
+            <button type="button" onclick="closeDeleteModal()" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" class="btn btn-danger">🗑️ Sí, eliminar</button>
+        </form>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    document.addEventListener('click', function(e) {
+        const sb = document.getElementById('sidebar'), hb = document.getElementById('hamburger');
+        if (window.innerWidth <= 640 && !sb.contains(e.target) && !hb.contains(e.target) && sb.classList.contains('open')) sb.classList.remove('open');
+    });
+    const alertBox = document.getElementById('alertBox');
+    if(alertBox && alertBox.textContent.trim()) setTimeout(() => alertBox.classList.remove('show'), 4000);
+    const modalForm = document.getElementById('modalForm'), modalDelete = document.getElementById('modalDelete'), deleteForm = document.getElementById('deleteForm');
+    function openCreateModal() { document.getElementById('roomForm').reset(); document.getElementById('roomId').value=''; document.getElementById('modalTitle').textContent='✨ Nueva Habitación'; modalForm.classList.add('active'); }
+    function openEditModalFromData(btn) { openEditModal(btn.dataset.id, btn.dataset.numero, btn.dataset.tipo, btn.dataset.precio, btn.dataset.estado); }
+    function openEditModal(id, numero, tipo, precio, estado) {
+        document.getElementById('roomId').value=id; document.getElementById('roomForm').querySelector('[name="numero"]').value=numero;
+        document.getElementById('roomForm').querySelector('[name="tipo"]').value=tipo; document.getElementById('roomForm').querySelector('[name="precioNoche"]').value=precio;
+        document.getElementById('roomForm').querySelector('[name="estado"]').value=estado;
+        document.getElementById('modalTitle').textContent='✏️ Editar Habitación'; modalForm.classList.add('active');
+    }
+    function closeModal() { modalForm.classList.remove('active'); }
+    function openDeleteModalFromData(btn) { document.getElementById('deleteRoomInfo').textContent=`Habitación ${btn.dataset.numero} - ${btn.dataset.tipo}`; deleteForm.action=`/admin/rooms/delete/${btn.dataset.id}`; modalDelete.classList.add('active'); }
+    function closeDeleteModal() { modalDelete.classList.remove('active'); }
+    window.onclick = function(e) { if(e.target===modalForm) closeModal(); if(e.target===modalDelete) closeDeleteModal(); };
+    document.onkeydown = function(e) { if(e.key==='Escape') { closeModal(); closeDeleteModal(); } };
+    document.getElementById('roomForm').onsubmit = function(e) {
+        const precio = parseFloat(document.getElementById('roomForm').querySelector('[name="precioNoche"]').value);
+        if(precio <= 0) { e.preventDefault(); alert('⚠️ El precio debe ser mayor a $0.00'); return false; }
+        return true;
+    };
+    const action = /*[[${action}]]*/ '';
+    if(action === 'edit') { const r = /*[[${room}]]*/ {}; if(r && r.id) openEditModal(r.id, r.numero, r.tipo, r.precioNoche, r.estado); }
+</script>
+</body>
+</html>

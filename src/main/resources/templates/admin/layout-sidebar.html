@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE | Hotel Gestión">Admin</title>
+    <style>
+        :root {
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
+            --sidebar-active: #3b82f6;
+            --sidebar-text: #e2e8f0;
+            --header-bg: #ffffff;
+            --content-bg: #f1f5f9;
+            --primary: #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: var(--content-bg);
+        }
+
+        /* SIDEBAR FIJO */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--sidebar-hover);
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0;
+            flex: 1;
+        }
+
+        .sidebar-menu li {
+            margin: 0.25rem 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--sidebar-hover);
+            border-left-color: var(--sidebar-text);
+        }
+
+        .sidebar-menu a.active {
+            background: var(--sidebar-active);
+            border-left-color: #fff;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--sidebar-hover);
+            background: #0f172a;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .user-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.625rem;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: var(--header-bg);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h2>🏨 Hotel Gestión</h2>
+        <p>Sistema Administrativo</p>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li>
+            <a href="/admin/dashboard" th:classappend="${activePage == 'dashboard'} ? 'active'">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/rooms" th:classappend="${activePage == 'rooms'} ? 'active'">
+                <span>🚪</span>
+                <span>Habitaciones</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/users" th:classappend="${activePage == 'users'} ? 'active'">
+                <span>👥</span>
+                <span>Usuarios</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/reservations" th:classappend="${activePage == 'reservations'} ? 'active'">
+                <span>📝</span>
+                <span>Reservas</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/stays" th:classappend="${activePage == 'stays'} ? 'active'">
+                <span>🛏️</span>
+                <span>Asistencia / Estadías</span>
+            </a>
+        </li>
+        <li>
+            <a href="/admin/services" th:classappend="${activePage == 'services'} ? 'active'">
+                <span>🧾</span>
+                <span>Servicios Extra</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail, 0, 1))}">A</div>
+            <div class="user-details">
+                <div class="user-name" th:text="${userEmail}">admin@hotel.com</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+        <a href="/logout" class="btn-logout">
+            <span>🚪</span>
+            <span>Cerrar Sesión</span>
+        </a>
+    </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="main-content">
+    <div class="topbar">
+        <div>
+            <div class="breadcrumb">Admin / <span th:text="${pageTitle}">Página</span></div>
+        </div>
+        <div style="color: #64748b; font-size: 0.875rem;">
+            <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+        </div>
+    </div>
+
+    <div class="content-wrapper" layout:fragment="content">
+        <!-- El contenido específico de cada página va aquí -->
+    </div>
+</div>
+</body>
+</html>

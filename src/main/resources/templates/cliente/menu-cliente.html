@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Cliente</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }
+        h1 { color: #667eea; }
+        .btn { display: inline-block; padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        .logout { float: right; color: red; text-decoration: none; }
+    </style>
+</head>
+<body>
+<a href="/logout" class="logout">Cerrar Sesión</a>
+<div class="card">
+    <h1>👋 Bienvenido, Cliente</h1>
+    <p>Has iniciado sesión con: <strong th:text="${userEmail}">usuario@email.com</strong></p>
+    <hr>
+    <h3>Mis Opciones:</h3>
+    <ul>
+        <li>📋 Ver Catálogo de Habitaciones</li>
+        <li>📅 Crear Reserva</li>
+        <li>🕒 Ver Historial</li>
+    </ul>
+    <p><em>(Estos módulos se conectarán en el siguiente paso)</em></p>
+</div>
+</body>
+</html>
