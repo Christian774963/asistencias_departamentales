@@ -11,8 +11,10 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT r FROM Reservation r WHERE " +
-            "(:estado IS NULL OR r.estado LIKE %:estado%) AND " +
+    @Query("SELECT r FROM Reservation r " +
+            "LEFT JOIN FETCH r.user " +  // ✅ CRÍTICO
+            "LEFT JOIN FETCH r.room " +  // ✅ CRÍTICO
+            "WHERE (:estado IS NULL OR r.estado LIKE %:estado%) AND " +
             "(:fechaInicio IS NULL OR r.fechaInicio >= :fechaInicio) AND " +
             "(:fechaFin IS NULL OR r.fechaFin <= :fechaFin)")
     Page<Reservation> findByFilters(
