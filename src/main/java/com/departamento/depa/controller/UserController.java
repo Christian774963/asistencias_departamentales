@@ -72,8 +72,19 @@ public class UserController {
     //  ELIMINAR
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirect) {
-        userService.deleteById(id);
-        redirect.addFlashAttribute("msg", "Usuario eliminado ️");
+        try {
+            // Verificar si el usuario tiene reservas
+            if (userService.hasReservations(id)) {
+                redirect.addFlashAttribute("error",
+                        "No se puede eliminar: El usuario tiene reservas asociadas");
+            } else {
+                userService.deleteById(id);
+                redirect.addFlashAttribute("msg", "Usuario eliminado correctamente");
+            }
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error",
+                    "Error al eliminar: " + e.getMessage());
+        }
         return "redirect:/admin/users";
     }
 

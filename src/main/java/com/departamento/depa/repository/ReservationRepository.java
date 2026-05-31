@@ -25,4 +25,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     );
 
     List<Reservation> findByEstado(String estado);
+    boolean existsByUserId(Long userId);
 }

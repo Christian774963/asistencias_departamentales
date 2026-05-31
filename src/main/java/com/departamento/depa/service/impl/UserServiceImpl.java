@@ -2,6 +2,7 @@ package com.departamento.depa.service.impl;
 
 import com.departamento.depa.entity.User;
 import com.departamento.depa.repository.UserRepository;
+import com.departamento.depa.repository.ReservationRepository;
 import com.departamento.depa.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +14,20 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ReservationRepository reservationRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           ReservationRepository reservationRepository) {
         this.userRepository = userRepository;
+        this.reservationRepository = reservationRepository;
+    }
+
+    @Override
+    public Page<User> findByFilters(String nombre, String email, String rol, Pageable pageable) {
+        nombre = (nombre == null || nombre.isBlank()) ? null : nombre;
+        email = (email == null || email.isBlank()) ? null : email;
+        rol = (rol == null || rol.isBlank() || "Todos".equals(rol)) ? null : rol;
+        return userRepository.findByFilters(nombre, email, rol, pageable);
     }
 
     @Override
@@ -43,13 +55,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
+    // ✅ NUEVO: Verificar si el usuario tiene reservas asociadas
     @Override
-    public Page<User> findByFilters(String nombre, String email, String rol, Pageable pageable) {
-        // Normalizar parámetros vacíos a null
-        nombre = (nombre == null || nombre.isBlank()) ? null : nombre;
-        email = (email == null || email.isBlank()) ? null : email;
-        rol = (rol == null || rol.isBlank() || "Todos".equals(rol)) ? null : rol;
-
-        return userRepository.findByFilters(nombre, email, rol, pageable);
+    public boolean hasReservations(Long userId) {
+        return reservationRepository.existsByUserId(userId);
     }
 }

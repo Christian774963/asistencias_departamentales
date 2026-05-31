@@ -13,4 +13,5 @@ public interface UserService {
     void deleteById(Long id);
     long count();
     Page<User> findByFilters(String nombre, String email, String rol, Pageable pageable);
+    boolean hasReservations(Long userId);
 }

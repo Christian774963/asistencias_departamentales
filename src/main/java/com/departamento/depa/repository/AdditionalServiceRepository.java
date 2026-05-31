@@ -13,6 +13,7 @@ public interface AdditionalServiceRepository extends JpaRepository<AdditionalSer
             "LEFT JOIN FETCH s.stay st " +
             "LEFT JOIN FETCH st.reservation r " +
             "LEFT JOIN FETCH r.user " +
+            "LEFT JOIN FETCH r.room " +
             "LEFT JOIN FETCH s.serviceType " +
             "WHERE (:stayId IS NULL OR s.stay.id = :stayId)")
     Page<AdditionalService> findByFilters(@Param("stayId") Long stayId, Pageable pageable);

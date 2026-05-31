@@ -43,7 +43,7 @@ public class AdditionalServiceController {
         model.addAttribute("stayId", stayId);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", services.getTotalPages());
-        model.addAttribute("activePage", "services"); // ✅ Sidebar Active
+        model.addAttribute("activePage", "services");
         model.addAttribute("service", new AdditionalService());
         model.addAttribute("action", "create");
 

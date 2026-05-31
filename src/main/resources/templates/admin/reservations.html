@@ -112,12 +112,12 @@
     </div>
     <nav class="sidebar-nav">
         <div class="nav-section-label">Módulos</div>
-        <a href="/admin/dashboard" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active'"><i class="ti ti-dashboard"></i><span>Dashboard</span></a>
-        <a href="/admin/rooms" class="nav-item" th:classappend="${activePage == 'rooms'} ? 'active'"><i class="ti ti-building"></i><span>Habitaciones</span><span class="nav-badge" th:text="${totalRooms}">0</span></a>
+        <a href="/admin/dashboard" class="nav-item " th:classappend="${activePage == 'dashboard'} ? 'active'"><i class="ti ti-dashboard"></i><span>Dashboard</span></a>
+        <a href="/admin/rooms" class="nav-item "  th:classappend="${activePage == 'rooms'} ? 'active'"><i class="ti ti-building"></i><span>Habitaciones</span><span class="nav-badge" th:text="${totalRooms}">0</span></a>
         <a href="/admin/users" class="nav-item" th:classappend="${activePage == 'users'} ? 'active'"><i class="ti ti-users"></i><span>Usuarios</span><span class="nav-badge" th:text="${totalUsers}">0</span></a>
-        <a href="/admin/reservations" class="nav-item active"><i class="ti ti-calendar-event"></i><span>Reservas</span><span class="nav-badge" th:text="${totalReservations}">0</span></a>
-        <a href="/admin/stays" class="nav-item"><i class="ti ti-bed"></i><span>Estadías</span></a>
-        <a href="/admin/services" class="nav-item"><i class="ti ti-receipt"></i><span>Servicios extra</span></a>
+        <a href="/admin/reservations" class="nav-item active" th:classappend="${activePage == 'reservations'} ? 'active'"><i class="ti ti-calendar-event"></i><span>Reservas</span><span class="nav-badge" th:text="${totalReservations}">0</span></a>
+        <a href="/admin/stays" class="nav-item " th:classappend="${activePage == 'stays'} ? 'active'"><i class="ti ti-bed"></i><span>Estadías</span><span class="nav-badge" th:text="${totalStays}">0</span></a>
+        <a href="/admin/services" class="nav-item "><i class="ti ti-receipt"></i><span>Servicios Extra</span><span class="nav-badge" th:text="${totalServices}">0</span></a>
     </nav>
     <div class="sidebar-footer">
         <div class="user-card"><div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail, 0, 1))}">A</div><div style="flex:1;min-width:0;"><div class="user-name" th:text="${userEmail}">admin@hotel.com</div><div class="user-role">Administrador</div></div></div>

@@ -7,364 +7,320 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        @keyframes bgDrift{0%,100%{transform:scale(1.06) translate(0,0)}33%{transform:scale(1.09) translate(-0.8%,0.8%)}66%{transform:scale(1.07) translate(0.8%,-0.4%)}}
+        @keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes iconGlow{0%,100%{box-shadow:0 8px 24px rgba(37,99,235,.32)}50%{box-shadow:0 12px 36px rgba(37,99,235,.52)}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes errShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+        @keyframes errIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spinRing{to{transform:rotate(360deg)}}
+        @keyframes spinInner{to{transform:rotate(-360deg)}}
+        @keyframes overlayIn{from{opacity:0}to{opacity:1}}
+        @keyframes successPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+        @keyframes lineDraw{from{width:0}to{width:100%}}
+        @keyframes floatDot{0%,100%{transform:translateY(0) scale(1);opacity:.5}50%{transform:translateY(-14px) scale(1.2);opacity:.9}}
 
-        @keyframes bgShift {
-            0%, 100% { background-position: 0% 50%; }
-            50%       { background-position: 100% 50%; }
-        }
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(28px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes fadeDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes iconPulse {
-            0%, 100% { transform: scale(1); }
-            50%       { transform: scale(1.08); }
-        }
-        @keyframes shimmer {
-            0%   { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        @keyframes errIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        body{font-family:'Nunito',sans-serif;min-height:100vh;display:flex;align-items:stretch;overflow:hidden;background:#F8FAFF}
 
-        body {
-            font-family: 'Nunito', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background: linear-gradient(-45deg, #4338CA, #6D28D9, #7C3AED, #4F46E5);
-            background-size: 400% 400%;
-            animation: bgShift 8s ease infinite;
-        }
+        .layout{display:flex;width:100%;min-height:100vh;position:relative}
 
-        .login-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 36px 32px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 24px 60px rgba(67,56,202,0.28), 0 8px 20px rgba(0,0,0,0.1);
-            animation: cardIn 0.55s cubic-bezier(0.4,0,0.2,1) both;
-        }
+        /* LEFT */
+        .left-panel{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:60px}
+        .left-bg{position:absolute;inset:-6%;background:url('https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1400&q=85') center/cover no-repeat;animation:bgDrift 20s ease-in-out infinite}
+        .left-overlay{position:absolute;inset:0;background:linear-gradient(160deg,rgba(15,23,42,.15) 0%,rgba(15,23,42,.45) 50%,rgba(15,23,42,.85) 100%)}
+        .left-content{position:relative;z-index:2;color:white}
+        .left-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);padding:8px 18px;border-radius:99px;font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;color:rgba(255,255,255,.95)}
+        .left-tag span{font-size:16px}
+        .left-title{font-size:48px;font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-1px}
+        .left-title em{font-style:normal;color:#93C5FD}
+        .left-desc{font-size:16px;color:rgba(255,255,255,.85);font-weight:500;line-height:1.6;max-width:420px}
+        .left-dots{display:flex;gap:8px;margin-top:32px}
+        .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.35);animation:floatDot 3s ease-in-out infinite}
+        .dot:nth-child(2){animation-delay:.5s;background:rgba(147,197,253,.6)}
+        .dot:nth-child(3){animation-delay:1s}
+        .left-stats{position:absolute;top:40px;right:40px;z-index:3;display:flex;flex-direction:column;gap:12px}
+        .left-stat{background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.6);border-radius:14px;padding:14px 18px;min-width:150px;box-shadow:0 4px 20px rgba(15,23,42,.12);animation:fadeDown .5s both}
+        .left-stat:nth-child(1){animation-delay:.3s}.left-stat:nth-child(2){animation-delay:.5s}.left-stat:nth-child(3){animation-delay:.7s}
+        .ls-label{font-size:11px;color:#64748B;font-weight:700;letter-spacing:.5px;margin-bottom:4px}
+        .ls-value{font-size:22px;font-weight:800;color:#0F172A;line-height:1}
+        .ls-sub{font-size:11px;color:#16A34A;font-weight:700;margin-top:4px}
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 28px;
-            animation: fadeDown 0.5s 0.1s both;
-        }
+        /* RIGHT */
+        .right-panel{width:480px;min-width:420px;background:#FFFFFF;display:flex;flex-direction:column;justify-content:center;padding:48px 50px;position:relative;overflow:hidden;box-shadow:-12px 0 40px rgba(15,23,42,.06)}
+        .right-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#2563EB,#60A5FA,#BFDBFE,#2563EB);background-size:200% 100%;animation:shimmer 3s ease-in-out infinite;z-index:10}
+        .form-brand{margin-bottom:36px;animation:fadeDown .45s .05s both}
+        .form-brand-row{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+        .brand-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1D4ED8,#2563EB);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:iconGlow 3s ease-in-out infinite}
+        .brand-icon span{font-size:28px;color:white}
+        .brand-text-wrap h1{font-size:22px;font-weight:800;color:#0F172A;margin-bottom:4px;letter-spacing:-.3px}
+        .brand-text-wrap p{font-size:12px;color:#94A3B8;font-weight:600}
+        .divider-line{height:1px;background:linear-gradient(90deg,#DBEAFE,#93C5FD,#DBEAFE);margin:0;animation:lineDraw .8s .3s both ease-out}
+        .welcome-text{margin-bottom:28px;animation:fadeDown .4s .15s both}
+        .welcome-text h2{font-size:24px;font-weight:800;color:#0F172A;margin-bottom:6px;letter-spacing:-.3px}
+        .welcome-text p{font-size:14px;color:#64748B;font-weight:500}
 
-        .brand-icon {
-            width: 62px;
-            height: 62px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #4F46E5, #7C3AED);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            box-shadow: 0 8px 20px rgba(79,70,229,0.38);
-            animation: iconPulse 3s ease infinite;
-        }
-        .brand-icon span {
-            font-size: 30px;
-            color: white;
-        }
+        /* ERROR */
+        .error-message{display:none;align-items:center;gap:8px;background:#FEF2F2;color:#991B1B;border:1px solid #FCA5A5;padding:12px 16px;border-radius:10px;margin-bottom:20px;font-size:14px;font-weight:700}
+        .error-message.show{display:flex;animation:errIn .3s ease both}
+        .error-message.shake{animation:errShake .4s ease both}
+        .error-message .ms{font-size:18px;color:#DC2626}
 
-        .login-header h1 {
-            color: #1E1B4B;
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-        .login-header p {
-            color: #6B7280;
-            font-size: 13px;
-            font-weight: 500;
-        }
+        /* FORM */
+        .form-group{margin-bottom:20px;animation:fadeDown .4s both}
+        .form-group:nth-child(1){animation-delay:.2s}.form-group:nth-child(2){animation-delay:.28s}
+        .form-group label{display:flex;align-items:center;gap:6px;margin-bottom:8px;color:#374151;font-size:13px;font-weight:800;letter-spacing:.3px}
+        .form-group label .ms{font-size:16px;color:#2563EB}
+        .input-wrapper{position:relative}
+        .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#CBD5E1;pointer-events:none;transition:color .2s}
+        .input-wrapper:focus-within .input-icon{color:#2563EB}
+        .form-group input{width:100%;padding:14px 14px 14px 42px;border:1.5px solid #E2E8F0;border-radius:12px;font-size:14px;font-weight:600;font-family:'Nunito',sans-serif;color:#0F172A;background:#F8FAFF;transition:border-color .2s,box-shadow .2s,background .2s}
+        .form-group input::placeholder{color:#94A3B8;font-weight:500}
+        .form-group input:focus{outline:none;border-color:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,.1);background:#FFFFFF}
+        #password{padding-right:44px}
+        .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#CBD5E1;display:flex;align-items:center;transition:color .2s}
+        .pw-toggle:hover{color:#2563EB}
+        .pw-toggle .ms{font-size:18px}
 
-        .error-message {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            background: #FEF2F2;
-            color: #991B1B;
-            border: 1px solid #FCA5A5;
-            padding: 10px 14px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            animation: errIn 0.3s ease both;
-        }
-        .error-message.show {
-            display: flex;
-        }
-        .error-message span {
-            font-size: 18px;
-            color: #DC2626;
-        }
+        /* BUTTON */
+        .btn-login{width:100%;padding:15px;margin-top:8px;background:linear-gradient(135deg,#1D4ED8,#2563EB);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;animation:fadeDown .4s .36s both;letter-spacing:.5px;box-shadow:0 4px 16px rgba(37,99,235,.3)}
+        .btn-login::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.14) 50%,transparent 62%);background-size:200% 100%;animation:shimmer 2.5s ease-in-out infinite}
+        .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.42)}
+        .btn-login:active{transform:translateY(0)}
+        .btn-login .ms{font-size:19px}
+        .btn-login:disabled{opacity:.65;cursor:not-allowed;transform:none}
 
-        .form-group {
-            margin-bottom: 18px;
-            animation: fadeDown 0.45s both;
-        }
-        .form-group:nth-child(1) { animation-delay: .18s; }
-        .form-group:nth-child(2) { animation-delay: .26s; }
+        /* LOADING OVERLAY */
+        .loading-overlay{display:none;position:absolute;inset:0;z-index:999;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;gap:24px}
+        .loading-overlay.show{display:flex;animation:overlayIn .3s ease both}
+        .spinner-wrap{position:relative;width:68px;height:68px}
+        .ring-outer{position:absolute;inset:0;border:3px solid transparent;border-top-color:#2563EB;border-right-color:#BFDBFE;border-radius:50%;animation:spinRing 1s linear infinite}
+        .ring-mid{position:absolute;inset:8px;border:2px solid transparent;border-top-color:#60A5FA;border-left-color:#DBEAFE;border-radius:50%;animation:spinInner .7s linear infinite}
+        .ring-inner{position:absolute;inset:16px;border:2px solid transparent;border-top-color:#2563EB;border-radius:50%;animation:spinRing .5s linear infinite}
+        .spinner-dot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+        .spinner-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:#2563EB;box-shadow:0 0 10px rgba(37,99,235,.5)}
+        .loading-text{color:#1E3A8A;font-size:15px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+        .loading-sub{color:#64748B;font-size:12px;font-weight:600;margin-top:4px;text-align:center}
 
-        .form-group label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 7px;
-            color: #374151;
-            font-size: 13px;
-            font-weight: 700;
-        }
-        .form-group label span {
-            font-size: 17px;
-            color: #6D28D9;
-        }
+        /* SUCCESS OVERLAY — solo se activa por redirect exitoso */
+        .success-overlay{display:none;position:absolute;inset:0;z-index:1000;background:rgba(240,249,255,.92);backdrop-filter:blur(10px);flex-direction:column;align-items:center;justify-content:center;gap:20px}
+        .success-overlay.show{display:flex;animation:overlayIn .3s ease both}
+        .success-icon-wrap{width:80px;height:80px;border-radius:50%;background:#DBEAFE;border:2px solid #93C5FD;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(37,99,235,.08),0 8px 24px rgba(37,99,235,.2);animation:successPop .55s cubic-bezier(.4,0,.2,1) both}
+        .success-icon-wrap .ms{font-size:40px;color:#2563EB}
+        .success-text{color:#0F172A;font-size:22px;font-weight:800;letter-spacing:-.3px}
+        .success-sub{color:#64748B;font-size:14px;font-weight:600}
 
-        .input-wrapper {
-            position: relative;
-        }
-        .input-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            color: #9CA3AF;
-            pointer-events: none;
-            transition: color 0.2s;
-        }
-        .input-wrapper:focus-within .input-icon {
-            color: #6D28D9;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 11px 12px 11px 40px;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            font-family: 'Nunito', sans-serif;
-            color: #111827;
-            background: #FAFAFA;
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-        }
-        .form-group input::placeholder {
-            color: #9CA3AF;
-            font-weight: 400;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #6D28D9;
-            box-shadow: 0 0 0 3px rgba(109,40,217,0.12);
-            background: white;
-        }
-
-        #password {
-            padding-right: 42px;
-        }
-
-        .pw-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            color: #9CA3AF;
-            display: flex;
-            align-items: center;
-            transition: color 0.2s;
-        }
-        .pw-toggle:hover { color: #6D28D9; }
-        .pw-toggle span { font-size: 18px; }
-
-        .btn-login {
-            width: 100%;
-            padding: 13px;
-            margin-top: 6px;
-            background: linear-gradient(135deg, #4F46E5, #7C3AED);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            font-family: 'Nunito', sans-serif;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            animation: fadeDown 0.45s 0.34s both;
-        }
-        .btn-login::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.12) 50%, transparent 62%);
-            background-size: 200% 100%;
-            animation: shimmer 2.5s ease-in-out infinite;
-        }
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(79,70,229,0.42);
-        }
-        .btn-login:active { transform: translateY(0); }
-        .btn-login span { font-size: 19px; }
-
-        .credentials-info {
-            margin-top: 24px;
-            padding: 16px;
-            background: #F5F3FF;
-            border: 1px solid #DDD6FE;
-            border-radius: 12px;
-            animation: fadeDown 0.45s 0.44s both;
-        }
-        .credentials-info h3 {
-            font-size: 12px;
-            font-weight: 700;
-            color: #4C1D95;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .credentials-info h3 span { font-size: 15px; }
-
-        .cred-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 10px;
-            border-radius: 8px;
-            background: white;
-            border: 1px solid #EDE9FE;
-            margin-bottom: 6px;
-            transition: border-color 0.15s;
-        }
-        .cred-row:last-child { margin-bottom: 0; }
-        .cred-row:hover { border-color: #C4B5FD; }
-
-        .cred-badge {
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 99px;
-            flex-shrink: 0;
-        }
-        .cred-badge.admin  { background: #EDE9FE; color: #4C1D95; }
-        .cred-badge.client { background: #E0F2FE; color: #075985; }
-
-        .cred-text {
-            font-size: 11px;
-            font-weight: 600;
-            color: #374151;
-            font-family: monospace;
-        }
-
-        @media (max-width: 460px) {
-            .login-container { padding: 32px 22px 28px; }
+        @media(max-width:900px){
+            .left-panel{display:none}
+            .layout{justify-content:center;align-items:center;background:url('https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1400&q=85') center/cover no-repeat;padding:20px}
+            .layout::before{content:'';position:absolute;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(8px)}
+            .right-panel{width:100%;max-width:440px;min-width:0;padding:40px 30px;border-radius:20px;box-shadow:0 24px 48px rgba(0,0,0,.4);z-index:10}
+            .right-panel::before{border-radius:20px 20px 0 0}
         }
     </style>
 </head>
 <body>
+<div class="layout">
 
-<div class="login-container">
-
-    <div class="login-header">
-        <div class="brand-icon">
-            <span class="material-symbols-outlined">hotel</span>
+    <!-- PANEL IZQUIERDO -->
+    <div class="left-panel">
+        <div class="left-bg"></div>
+        <div class="left-overlay"></div>
+        <div class="left-stats">
+            <div class="left-stat">
+                <div class="ls-label">Ocupación actual</div>
+                <div class="ls-value">94<span style="font-size:14px;color:#64748B">%</span></div>
+                <div class="ls-sub">↑ +6% este mes</div>
+            </div>
+            <div class="left-stat">
+                <div class="ls-label">Habitaciones</div>
+                <div class="ls-value">48</div>
+                <div class="ls-sub">↑ Disponibles: 3</div>
+            </div>
+            <div class="left-stat">
+                <div class="ls-label">Reservas hoy</div>
+                <div class="ls-value">12</div>
+                <div class="ls-sub">↑ Confirmadas</div>
+            </div>
         </div>
-        <h1>Hotel Gestión</h1>
-        <p>Sistema de asistencia y reservas</p>
+        <div class="left-content">
+            <div class="left-tag">
+                <span class="material-symbols-outlined" style="font-size:16px">stars</span>
+                Cinco Estrellas
+            </div>
+            <div class="left-title">Bienvenido al<br><em>Hotel</em></div>
+            <p class="left-desc">Sistema integral de administración hotelera. Gestión de reservas, estadías y servicios desde un solo panel.</p>
+            <div class="left-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
     </div>
 
-    <div th:if="${param.error}" class="error-message show">
-        <span class="material-symbols-outlined">error</span>
-        Correo o contraseña incorrectos
-    </div>
+    <!-- PANEL DERECHO -->
+    <div class="right-panel">
 
-    <form th:action="@{/login}" method="post">
-
-        <div class="form-group">
-            <label for="username">
-                <span class="material-symbols-outlined">mail</span>
-                Correo electrónico
-            </label>
-            <div class="input-wrapper">
-                <span class="material-symbols-outlined input-icon">mail</span>
-                <input type="email"
-                       id="username"
-                       name="username"
-                       placeholder="ejemplo@hotel.com"
-                       required
-                       autofocus
-                       autocomplete="email">
+        <!-- LOADING: se muestra al enviar, desaparece si hay error (page reload) -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner-wrap">
+                <div class="ring-outer"></div>
+                <div class="ring-mid"></div>
+                <div class="ring-inner"></div>
+                <div class="spinner-dot"></div>
+            </div>
+            <div style="text-align:center">
+                <div class="loading-text">Verificando acceso</div>
+                <div class="loading-sub">Por favor espere...</div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="password">
-                <span class="material-symbols-outlined">lock</span>
-                Contraseña
-            </label>
-            <div class="input-wrapper">
-                <span class="material-symbols-outlined input-icon">lock</span>
-                <input type="password"
-                       id="password"
-                       name="password"
-                       placeholder="••••••••"
-                       required
-                       autocomplete="current-password">
-                <button type="button" class="pw-toggle" id="pwToggle" aria-label="Mostrar contraseña">
-                    <span class="material-symbols-outlined" id="eyeIcon">visibility</span>
-                </button>
+        <!-- SUCCESS: solo se muestra si el servidor redirige con ?success -->
+        <div class="success-overlay" id="successOverlay">
+            <div class="success-icon-wrap">
+                <span class="material-symbols-outlined ms">verified</span>
+            </div>
+            <div style="text-align:center">
+                <div class="success-text">Acceso concedido</div>
+                <div class="success-sub">Redirigiendo al panel...</div>
             </div>
         </div>
 
-        <button type="submit" class="btn-login">
-            <span class="material-symbols-outlined">login</span>
-            Ingresar al sistema
-        </button>
+        <div class="form-brand">
+            <div class="form-brand-row">
+                <div class="brand-icon">
+                    <span class="material-symbols-outlined" style="font-size:28px;color:white">hotel</span>
+                </div>
+                <div class="brand-text-wrap">
+                    <h1>Hotel Gestión</h1>
+                    <p>Sistema de asistencia y reservas</p>
+                </div>
+            </div>
+            <div class="divider-line"></div>
+        </div>
 
-    </form>
+        <div class="welcome-text">
+            <h2>Iniciar sesión</h2>
+            <p>Ingresa tus credenciales para continuar</p>
+        </div>
 
+        <!-- Error de credenciales incorrectas (Spring Security añade ?error) -->
+        <div id="errBox" class="error-message" th:classappend="${param.error != null} ? 'show' : ''">
+            <span class="material-symbols-outlined ms">error</span>
+            Correo o contraseña incorrectos
+        </div>
 
+        <form th:action="@{/login}" method="post" id="loginForm">
+            <div class="form-group">
+                <label for="username">
+                    <span class="material-symbols-outlined ms">mail</span>
+                    Correo electrónico
+                </label>
+                <div class="input-wrapper">
+                    <span class="material-symbols-outlined input-icon">mail</span>
+                    <input type="email" id="username" name="username"
+                           placeholder="ejemplo@hotel.com" required autofocus autocomplete="email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">
+                    <span class="material-symbols-outlined ms">lock</span>
+                    Contraseña
+                </label>
+                <div class="input-wrapper">
+                    <span class="material-symbols-outlined input-icon">lock</span>
+                    <input type="password" id="password" name="password"
+                           placeholder="••••••••" required autocomplete="current-password">
+                    <button type="button" class="pw-toggle" id="pwToggle" aria-label="Mostrar contraseña">
+                        <span class="material-symbols-outlined ms" id="eyeIcon">visibility</span>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn-login" id="submitBtn">
+                <span class="material-symbols-outlined ms">login</span>
+                Ingresar al sistema
+            </button>
+        </form>
+    </div>
 </div>
 
 <script>
-    const pwInput = document.getElementById('password');
-    const eyeIcon = document.getElementById('eyeIcon');
+    /* ── Toggle contraseña ── */
+    document.getElementById('pwToggle').addEventListener('click', function(){
+        const p=document.getElementById('password'), e=document.getElementById('eyeIcon');
+        const h=p.type==='password';
+        p.type=h?'text':'password';
+        e.textContent=h?'visibility_off':'visibility';
+    });
 
-    document.getElementById('pwToggle').addEventListener('click', function () {
-        const isHidden = pwInput.type === 'password';
-        pwInput.type = isHidden ? 'text' : 'password';
-        eyeIcon.textContent = isHidden ? 'visibility_off' : 'visibility';
+    /* ── Sonidos ── */
+    function playSuccess(){
+        try{
+            const ctx=new(window.AudioContext||window.webkitAudioContext)();
+            [440,554,659].forEach(function(f,i){
+                const o=ctx.createOscillator(),g=ctx.createGain();
+                o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;
+                const t=ctx.currentTime+i*.1;
+                g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.03,t+.05);g.gain.linearRampToValueAtTime(0,t+.3);
+                o.start(t);o.stop(t+.35);
+            });
+        }catch(e){}
+    }
+    function playError(){
+        try{
+            const ctx=new(window.AudioContext||window.webkitAudioContext)();
+            [250,200].forEach(function(f,i){
+                const o=ctx.createOscillator(),g=ctx.createGain();
+                o.connect(g);g.connect(ctx.destination);o.type='triangle';o.frequency.value=f;
+                const t=ctx.currentTime+i*.15;
+                g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.04,t+.05);g.gain.linearRampToValueAtTime(0,t+.25);
+                o.start(t);o.stop(t+.3);
+            });
+        }catch(e){}
+    }
+
+    /* ── Si hay error: animar caja y reproducir sonido ── */
+    (function(){
+        const b=document.getElementById('errBox');
+        if(b&&b.classList.contains('show')){
+            setTimeout(playError,300);
+            setTimeout(function(){
+                b.classList.add('shake');
+                setTimeout(function(){b.classList.remove('shake');},500);
+            },300);
+        }
+    })();
+
+    /* ── Submit: muestra spinner y deja que el servidor decida ──
+       Si hay error → Spring redirige a /login?error → página recarga,
+         el overlay desaparece y aparece el mensaje de error.
+       Si hay éxito → Spring redirige al dashboard → login nunca vuelve a cargar.
+    ── */
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+        const email=document.getElementById('username').value.trim();
+        const pass=document.getElementById('password').value.trim();
+
+        // Validación local mínima: campos vacíos no disparan el spinner
+        if(!email||!pass) return;
+
+        // Mostrar spinner y deshabilitar botón
+        document.getElementById('submitBtn').disabled=true;
+        document.getElementById('loadingOverlay').classList.add('show');
+
+        // NO se llama e.preventDefault() → el form llega real al servidor
+        // Spring Security redirige según resultado:
+        //   Fallo  → /login?error  → página recarga → spinner desaparece → muestra error
+        //   Éxito  → /dashboard    → el login nunca se vuelve a ver
+    });
+
+    /* ── Safety net: si la página recarga (vuelta de error) ocultar spinner ──
+       Esto cubre el caso en que el navegador restaura el estado del botón. ── */
+    window.addEventListener('pageshow', function(ev){
+        // pageshow se dispara también al volver con bfcache
+        document.getElementById('loadingOverlay').classList.remove('show');
+        document.getElementById('submitBtn').disabled=false;
     });
 </script>
-
 </body>
 </html>

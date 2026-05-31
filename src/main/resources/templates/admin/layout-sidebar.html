@@ -6,31 +6,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$CONTENT_TITLE | Hotel Gestión">Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
     <style>
         :root {
-            --sidebar-bg: #1e293b;
-            --sidebar-hover: #334155;
-            --sidebar-active: #3b82f6;
-            --sidebar-text: #e2e8f0;
+            --sidebar-bg: #0f172a;
+            --sidebar-secondary: #1e293b;
+            --sidebar-hover: #2563eb;
+            --sidebar-active: #1d4ed8;
+            --sidebar-text: #94a3b8;
+            --sidebar-text-light: #f8fafc;
             --header-bg: #ffffff;
-            --content-bg: #f1f5f9;
-            --primary: #3b82f6;
+            --content-bg: #f8fafc;
+            --primary: #2563eb;
+            --border-color: #e2e8f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            display: flex;
+            font-family: 'Nunito', system-ui, sans-serif;
             min-height: 100vh;
             background: var(--content-bg);
+            color: #1e293b;
+            display: flex;
         }
 
-        /* SIDEBAR FIJO */
-        .sidebar {
-            width: 260px;
+        /* ── SIDEBAR CONTENEDOR ANCHO BASE ── */
+        .sidebar-container {
+            width: 280px;
             background: var(--sidebar-bg);
-            color: var(--sidebar-text);
             position: fixed;
             left: 0;
             top: 0;
@@ -39,260 +45,415 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--sidebar-hover);
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-        }
+        /* Scrollbar personalizado para el menú interno */
+        .sidebar-container::-webkit-scrollbar { width: 5px; }
+        .sidebar-container::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-container::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
 
-        .sidebar-header h2 {
-            font-size: 1.25rem;
-            font-weight: 700;
+        /* BRAND / LOGO */
+        .sidebar-brand {
+            padding: 24px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            color: #fff;
+            gap: 12px;
+            background: linear-gradient(180deg, #020617, var(--sidebar-bg));
+            border-bottom: 1px solid #1e293b;
         }
 
-        .sidebar-header p {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-top: 0.25rem;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 1rem 0;
-            flex: 1;
-        }
-
-        .sidebar-menu li {
-            margin: 0.25rem 0;
-        }
-
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1.5rem;
-            color: var(--sidebar-text);
-            text-decoration: none;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-menu a:hover {
-            background: var(--sidebar-hover);
-            border-left-color: var(--sidebar-text);
-        }
-
-        .sidebar-menu a.active {
-            background: var(--sidebar-active);
-            border-left-color: #fff;
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .sidebar-menu a i {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-        }
-
-        .sidebar-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--sidebar-hover);
-            background: #0f172a;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
             color: #fff;
+            font-size: 22px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
-        .user-details {
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--sidebar-text-light);
+            letter-spacing: -0.3px;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* NAVEGACIÓN PRINCIPAL */
+        .sidebar-nav {
+            padding: 20px 14px;
             flex: 1;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-section-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #475569;
+            letter-spacing: 1px;
+            padding-left: 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .nav-item span {
+            flex: 1;
+        }
+
+        /* Efectos Hover y Active unificados */
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--sidebar-text-light);
+        }
+
+        .nav-item:hover i {
+            transform: scale(1.05);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--sidebar-hover), var(--sidebar-active));
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .nav-item.active i {
+            color: #ffffff;
+        }
+
+        /* BADGES */
+        .nav-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--sidebar-text-light);
+            transition: all 0.2s;
+        }
+
+        .nav-item.active .nav-badge {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* FOOTER DE SIDEBAR */
+        .sidebar-footer {
+            padding: 16px;
+            background: #020617;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
         }
 
         .user-name {
-            font-weight: 600;
-            font-size: 0.875rem;
-            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--sidebar-text-light);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .user-role {
-            font-size: 0.75rem;
-            color: #94a3b8;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
         }
 
-        .btn-logout {
+        .logout {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            gap: 8px;
             width: 100%;
-            padding: 0.625rem;
+            padding: 11px;
             background: #ef4444;
-            color: #fff;
+            color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 13px;
             text-decoration: none;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .logout:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        /* ── CONTENIDO PRINCIPAL ── */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* TOPBAR PREMIUM */
+        .topbar {
+            background: var(--header-bg);
+            padding: 16px 32px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* BOTÓN MENÚ HAMBURGUESA (Móviles) */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #334155;
+            align-items: center;
             justify-content: center;
             transition: background 0.2s;
         }
 
-        .btn-logout:hover {
-            background: #dc2626;
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            flex: 1;
-            margin-left: 260px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .topbar {
-            background: var(--header-bg);
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .topbar h1 {
-            font-size: 1.5rem;
-            color: #1e293b;
-            font-weight: 700;
-        }
+        .menu-toggle:hover { background: #f1f5f9; }
+        .menu-toggle i { font-size: 20px; }
 
         .breadcrumb {
-            font-size: 0.875rem;
+            font-size: 13px;
+            font-weight: 600;
             color: #64748b;
         }
 
-        .content-wrapper {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
+        .breadcrumb span {
+            color: #0f172a;
+            font-weight: 700;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
+        .topbar-date {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 8px;
+        }
+
+        /* ENVOLTORIO DINÁMICO DE FRAGMENTOS */
+        .content-wrapper {
+            flex: 1;
+            padding: 32px;
+        }
+
+        /* OVERLAY PARA MÓVIL */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 950;
+            animation: fadeIn 0.2s ease both;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ── RESPONSIVO (Breakpoints) ── */
+        @media (max-width: 1024px) {
+            .sidebar-container {
                 transform: translateX(-100%);
-                transition: transform 0.3s;
             }
-            .sidebar.open {
+            .sidebar-container.open {
                 transform: translateX(0);
             }
             .main-content {
                 margin-left: 0;
             }
+            .menu-toggle {
+                display: inline-flex;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .topbar {
+                padding: 16px;
+            }
+            .content-wrapper {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <div class="sidebar-header">
-        <h2>🏨 Hotel Gestión</h2>
-        <p>Sistema Administrativo</p>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar-container" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon"><i class="ti ti-shield-check"></i></div>
+        <div>
+            <div class="brand-name">Hotel Gestión</div>
+            <div class="brand-sub">Sistema administrativo</div>
+        </div>
     </div>
 
-    <ul class="sidebar-menu">
-        <li>
-            <a href="/admin/dashboard" th:classappend="${activePage == 'dashboard'} ? 'active'">
-                <span>📊</span>
-                <span>Dashboard</span>
-            </a>
-        </li>
-        <li>
-            <a href="/admin/rooms" th:classappend="${activePage == 'rooms'} ? 'active'">
-                <span>🚪</span>
-                <span>Habitaciones</span>
-            </a>
-        </li>
-        <li>
-            <a href="/admin/users" th:classappend="${activePage == 'users'} ? 'active'">
-                <span>👥</span>
-                <span>Usuarios</span>
-            </a>
-        </li>
-        <li>
-            <a href="/admin/reservations" th:classappend="${activePage == 'reservations'} ? 'active'">
-                <span>📝</span>
-                <span>Reservas</span>
-            </a>
-        </li>
-        <li>
-            <a href="/admin/stays" th:classappend="${activePage == 'stays'} ? 'active'">
-                <span>🛏️</span>
-                <span>Asistencia / Estadías</span>
-            </a>
-        </li>
-        <li>
-            <a href="/admin/services" th:classappend="${activePage == 'services'} ? 'active'">
-                <span>🧾</span>
-                <span>Servicios Extra</span>
-            </a>
-        </li>
-    </ul>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Módulos</div>
+
+        <a href="/admin/dashboard" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active'">
+            <i class="ti ti-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/admin/rooms" class="nav-item" th:classappend="${activePage == 'rooms'} ? 'active'">
+            <i class="ti ti-building"></i>
+            <span>Habitaciones</span>
+            <span class="nav-badge" th:text="${totalRooms}">0</span>
+        </a>
+
+        <a href="/admin/users" class="nav-item" th:classappend="${activePage == 'users'} ? 'active'">
+            <i class="ti ti-users"></i>
+            <span>Usuarios</span>
+            <span class="nav-badge" th:text="${totalUsers}">0</span>
+        </a>
+
+        <a href="/admin/reservations" class="nav-item" th:classappend="${activePage == 'reservations'} ? 'active'">
+            <i class="ti ti-calendar-event"></i>
+            <span>Reservas</span>
+            <span class="nav-badge" th:text="${totalReservations}">0</span>
+        </a>
+
+        <a href="/admin/stays" class="nav-item" th:classappend="${activePage == 'stays'} ? 'active'">
+            <i class="ti ti-bed"></i>
+            <span>Estadías</span>
+            <span class="nav-badge" th:text="${totalStays}">0</span>
+        </a>
+
+        <a href="/admin/services" class="nav-item" th:classappend="${activePage == 'services'} ? 'active'">
+            <i class="ti ti-receipt"></i>
+            <span>Servicios Extra</span>
+            <span class="nav-badge" th:text="${totalServices}">0</span>
+        </a>
+    </nav>
 
     <div class="sidebar-footer">
-        <div class="user-info">
+        <div class="user-card">
             <div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail, 0, 1))}">A</div>
-            <div class="user-details">
+            <div style="flex:1; min-width:0;">
                 <div class="user-name" th:text="${userEmail}">admin@hotel.com</div>
                 <div class="user-role">Administrador</div>
             </div>
         </div>
-        <a href="/logout" class="btn-logout">
-            <span>🚪</span>
-            <span>Cerrar Sesión</span>
+        <a href="/logout" class="logout">
+            <i class="ti ti-logout"></i>
+            <span>Cerrar sesión</span>
         </a>
     </div>
 </aside>
 
-<!-- CONTENIDO PRINCIPAL -->
 <div class="main-content">
     <div class="topbar">
-        <div>
+        <div class="topbar-left">
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+                <i class="ti ti-menu-2"></i>
+            </button>
             <div class="breadcrumb">Admin / <span th:text="${pageTitle}">Página</span></div>
         </div>
-        <div style="color: #64748b; font-size: 0.875rem;">
+        <div class="topbar-date">
+            <i class="ti ti-clock" style="font-size: 16px;"></i>
             <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
         </div>
     </div>
 
-    <div class="content-wrapper" layout:fragment="content">
-        <!-- El contenido específico de cada página va aquí -->
-    </div>
+    <main class="content-wrapper" layout:fragment="content">
+    </main>
 </div>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function toggleMenu() {
+        sidebar.classList.toggle('open');
+        sidebarOverlay.classList.toggle('show');
+    }
+
+    if(menuToggle && sidebar && sidebarOverlay) {
+        menuToggle.addEventListener('click', toggleMenu);
+        sidebarOverlay.addEventListener('click', toggleMenu);
+    }
+</script>
 </body>
 </html>

@@ -29,4 +29,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Conteo por Rol (opcional para estadísticas futuras)
     long countByRol(String rol);
+
 }
