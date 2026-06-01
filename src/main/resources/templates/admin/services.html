@@ -187,7 +187,6 @@
         <span class="topbar-title"><i class="ti ti-receipt"></i> Servicios Extra</span>
     </header>
     <main class="main-body">
-        <!-- ✅ Toast Notifications con manejo de null -->
         <div class="alert alert-success" id="alertBox" th:if="${msg != null}">
             <i class="ti ti-circle-check" style="font-size:18px;color:var(--color-success)"></i>
             <span th:text="${msg}">Operación realizada con éxito</span>
@@ -198,7 +197,6 @@
         </div>
 
         <div class="card">
-            <!-- ✅ FILTROS CORREGIDOS: stayId como text para permitir string vacío -->
             <form method="get" class="filters">
                 <div class="filter-group">
                     <label>ID Estadía</label>
@@ -242,7 +240,6 @@
                     <tbody>
                     <tr th:each="s : ${services.content}">
                         <td th:text="${s.id}"></td>
-                        <!-- ✅ CORREGIDO: Uso de operador Elvis ?: para manejar nulls y evitar LazyInitializationException -->
                         <td th:text="${s.stay?.reservation?.user?.nombre ?: 'N/A'}" style="font-weight:700; color: var(--color-text);"></td>
                         <td th:text="${s.stay?.reservation?.room?.numero ?: 'N/A'}"></td>
                         <td th:text="${s.serviceType?.nombre ?: 'N/A'}"></td>
@@ -276,7 +273,6 @@
                 </table>
             </div>
 
-            <!-- ✅ Paginación con filtros completos -->
             <div class="pagination" th:if="${totalPages > 1}">
                 <a th:href="@{/admin/services(page=0, stayId=${stayId}, roomNumero=${roomNumero}, serviceName=${serviceName})}" th:classappend="${currentPage==0}?'disabled':''" th:if="${currentPage>0}"><i class="ti ti-chevrons-left"></i></a>
                 <a th:href="@{/admin/services(page=${currentPage-1}, stayId=${stayId}, roomNumero=${roomNumero}, serviceName=${serviceName})}" th:classappend="${currentPage==0}?'disabled':''" th:if="${currentPage>0}"><i class="ti ti-chevron-left"></i></a>
