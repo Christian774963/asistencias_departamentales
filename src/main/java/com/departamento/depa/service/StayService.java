@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface StayService {
-    Page<Stay> findByFilters(String estado, Pageable pageable);
+    Page<Stay> findByFilters(Long id, String estado, Pageable pageable);
     Optional<Stay> findById(Long id);
     Stay save(Stay stay);
     void deleteById(Long id);

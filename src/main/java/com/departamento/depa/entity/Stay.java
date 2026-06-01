@@ -16,7 +16,7 @@ public class Stay {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", unique = true)
+    @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
     @Column(name = "fecha_entrada_real")

@@ -4,667 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Habitaciones | Hotel Gestión</title>
-
-    <!-- Iconos profesionales Tabler -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
-    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Colores principales */
-            --color-primary: #3b82f6;
-            --color-primary-light: #eff6ff;
-            --color-primary-mid: #bfdbfe;
-            --color-bg: #f8fafc;
-            --color-surface: #ffffff;
-            --color-border: #e2e8f0;
-            --color-border-hover: #cbd5e1;
-            --color-text: #0f172a;
-            --color-muted: #64748b;
-            --color-subtle: #94a3b8;
-            --color-danger: #ef4444;
-            --color-danger-light: #fef2f2;
-            --color-success: #10b981;
-            --color-success-light: #ecfdf5;
-            --color-warning: #f59e0b;
-            --color-warning-light: #fef9c3;
-
-            /* Sidebar */
-            --sidebar-bg: #0f172a;
-            --sidebar-w: 260px;
-            --topbar-h: 64px;
-
-            /* Bordes y sombras */
-            --radius: 16px;
-            --radius-sm: 10px;
+            --color-primary: #3b82f6; --color-primary-light: #eff6ff; --color-primary-mid: #bfdbfe;
+            --color-bg: #f8fafc; --color-surface: #ffffff; --color-border: #e2e8f0;
+            --color-border-hover: #cbd5e1; --color-text: #0f172a; --color-muted: #64748b;
+            --color-subtle: #94a3b8; --color-danger: #ef4444; --color-danger-light: #fef2f2;
+            --color-success: #10b981; --color-success-light: #ecfdf5; --color-warning: #f59e0b;
+            --color-warning-light: #fef9c3; --sidebar-bg: #0f172a; --sidebar-w: 260px;
+            --topbar-h: 64px; --radius: 16px; --radius-sm: 10px;
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             --shadow-hover: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
             --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-            /* Transiciones */
             --transition: cubic-bezier(0.4, 0, 0.2, 1) 0.25s;
         }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Nunito', sans-serif; background: var(--color-bg); color: var(--color-text); min-height: 100vh; display: flex; overflow-x: hidden; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalScale { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes toastSlide { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastExit { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: var(--color-bg);
-            color: var(--color-text);
-            min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
-        }
-
-        /* Animaciones Premium */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideRight {
-            from { opacity: 0; transform: translateX(-10px); }
-            to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-        @keyframes modalScale {
-            from { transform: scale(0.96); opacity: 0; }
-            to   { transform: scale(1); opacity: 1; }
-        }
-        @keyframes toastIn {
-            from { transform: translateY(-20px) translateX(20px); opacity: 0; }
-            to   { transform: translateY(0) translateX(0); opacity: 1; }
-        }
-
-        /* ── SIDEBAR PREMIUM (IDÉNTICO AL DASHBOARD) ── */
-        .sidebar-container {
-            width: var(--sidebar-w);
-            min-width: var(--sidebar-w);
-            background: var(--sidebar-bg);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; left: 0;
-            height: 100vh;
-            z-index: 1000;
-            transition: transform var(--transition);
-            box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15);
-        }
-
-        .sidebar-brand {
-            padding: 24px 20px;
-            border-bottom: 1px solid #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: linear-gradient(180deg, #020617, var(--sidebar-bg));
-        }
-        .brand-icon {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 20px; flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
+        /* SIDEBAR */
+        .sidebar-container { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--sidebar-bg); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; transition: transform var(--transition); box-shadow: 4px 0 24px rgba(15, 23, 42, 0.15); }
+        .sidebar-brand { padding: 24px 20px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 12px; background: linear-gradient(180deg, #020617, var(--sidebar-bg)); }
+        .brand-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #2563eb, #1d4ed8); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
         .brand-name { font-size: 15px; font-weight: 800; color: #f8fafc; line-height: 1.2; }
-        .brand-sub  { font-size: 11px; color: #64748b; font-weight: 600; margin-top: 1px; }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 20px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow-y: auto;
-        }
+        .brand-sub { font-size: 11px; color: #64748b; font-weight: 600; margin-top: 1px; }
+        .sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
         .sidebar-nav::-webkit-scrollbar { width: 4px; }
         .sidebar-nav::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
-
-        .nav-section-label {
-            font-size: 11px;
-            color: #475569;
-            padding: 10px 12px 6px;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 11px 14px;
-            border-radius: var(--radius-sm);
-            color: #94a3b8;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            animation: slideRight 0.3s both;
-        }
-        .nav-item:nth-child(2) { animation-delay: .04s; }
-        .nav-item:nth-child(3) { animation-delay: .08s; }
-        .nav-item:nth-child(4) { animation-delay: .12s; }
-        .nav-item:nth-child(5) { animation-delay: .16s; }
-        .nav-item:nth-child(6) { animation-delay: .20s; }
-        .nav-item:nth-child(7) { animation-delay: .24s; }
-
+        .nav-section-label { font-size: 11px; color: #475569; padding: 10px 12px 6px; letter-spacing: 0.8px; text-transform: uppercase; font-weight: 800; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: var(--radius-sm); color: #94a3b8; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; animation: slideRight 0.3s both; }
+        .nav-item:nth-child(2) { animation-delay: .04s; } .nav-item:nth-child(3) { animation-delay: .08s; }
+        .nav-item:nth-child(4) { animation-delay: .12s; } .nav-item:nth-child(5) { animation-delay: .16s; }
+        .nav-item:nth-child(6) { animation-delay: .20s; } .nav-item:nth-child(7) { animation-delay: .24s; }
         .nav-item i { font-size: 19px; width: 22px; text-align: center; flex-shrink: 0; }
         .nav-item:hover { background: rgba(255, 255, 255, 0.04); color: #f8fafc; }
-        .nav-item.active {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #ffffff;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-        }
-
-        .sidebar-footer {
-            padding: 16px 12px;
-            border-top: 1px solid #1e293b;
-            background: #020617;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .user-card {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .user-avatar {
-            width: 34px; height: 34px; border-radius: 8px;
-            background: #2563eb;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 13px; font-weight: 800; flex-shrink: 0;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
-        }
+        .nav-item.active { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; font-weight: 700; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+        .sidebar-footer { padding: 16px 12px; border-top: 1px solid #1e293b; background: #020617; display: flex; flex-direction: column; gap: 10px; }
+        .user-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .user-avatar { width: 34px; height: 34px; border-radius: 8px; background: #2563eb; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
         .user-name { font-size: 13px; font-weight: 700; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .user-role { font-size: 11px; color: #64748b; font-weight: 600; }
-
-        .logout {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            background: #ef4444;
-            color: white;
-            font-size: 13px; font-weight: 700;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
-            transition: background var(--transition), transform 0.2s;
-        }
+        .logout { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: var(--radius-sm); background: #ef4444; color: white; font-size: 13px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); transition: background var(--transition), transform 0.2s; }
         .logout:hover { background: #dc2626; transform: translateY(-1px); }
 
-        /* ── CONTENIDO PRINCIPAL ── */
-        .main-wrapper {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            transition: margin-left var(--transition);
-            width: calc(100% - var(--sidebar-w));
-        }
-
-        /* BARRA SUPERIOR */
-        .topbar {
-            height: var(--topbar-h);
-            background: var(--color-surface);
-            border-bottom: 1px solid var(--color-border);
-            display: flex; align-items: center;
-            padding: 0 32px; gap: 14px;
-            position: sticky; top: 0;
-            z-index: 900;
-            box-shadow: var(--shadow-sm);
-        }
-        .hamburger {
-            display: none;
-            background: none; border: 1px solid var(--color-border);
-            border-radius: 8px; padding: 6px; cursor: pointer;
-            color: var(--color-text); align-items: center; justify-content: center;
-        }
+        /* MAIN CONTENT */
+        .main-wrapper { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; transition: margin-left var(--transition); width: calc(100% - var(--sidebar-w)); }
+        .topbar { height: var(--topbar-h); background: var(--color-surface); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; padding: 0 32px; gap: 14px; position: sticky; top: 0; z-index: 900; box-shadow: var(--shadow-sm); }
+        .hamburger { display: none; background: none; border: 1px solid var(--color-border); border-radius: 8px; padding: 6px; cursor: pointer; color: var(--color-text); align-items: center; justify-content: center; }
         .hamburger:hover { background: #f1f5f9; }
         .topbar-title { font-size: 16px; font-weight: 800; color: var(--color-text); flex: 1; display: flex; align-items: center; gap: 8px; }
         .topbar-title i { color: var(--color-primary); font-size: 20px; }
-
-        /* CUERPO */
         .main-body { padding: 32px; flex: 1; }
 
-        /* CARD & FILTROS */
-        .card {
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: var(--shadow-card);
-            animation: fadeUp 0.35s both;
-        }
+        /* CARD & FILTERS */
+        .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-card); animation: fadeUp 0.35s both; }
+        .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+        .filter-group label { display: block; font-size: 11px; color: var(--color-muted); margin-bottom: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; }
+        .filter-group input, .filter-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; font-weight: 600; color: var(--color-text); background: #fff; transition: all 0.2s; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); }
+        .filter-actions { display: flex; gap: 10px; align-items: flex-end; }
 
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .filter-group label {
-            display: block;
-            font-size: 11px;
-            color: var(--color-muted);
-            margin-bottom: 6px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-        }
-        .filter-group input, .filter-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-family: inherit;
-            font-weight: 600;
-            color: var(--color-text);
-            background: #fff;
-            transition: all 0.2s;
-        }
-        .filter-group input:focus, .filter-group select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-        }
-        .filter-actions {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
+        /* BUTTONS */
+        .btn { padding: 10px 18px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 13px; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; }
+        .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15); }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
+        .btn-secondary { background: var(--color-surface); color: var(--color-muted); border: 1px solid var(--color-border); }
+        .btn-secondary:hover { background: #f1f5f9; color: var(--color-text); border-color: var(--color-border-hover); }
+        .btn-danger { background: var(--color-danger); color: #fff; }
+        .btn-danger:hover { background: #dc2626; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+        .btn-warning { background: #f59e0b; color: #fff; }
+        .btn-warning:hover { background: #d97706; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+        .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 6px; }
 
-        /* BOTONES PREMIUM */
-        .btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-        }
-        .btn-primary {
-            background: var(--color-primary);
-            color: #fff;
-            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
-        }
-        .btn-primary:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-        }
-        .btn-secondary {
-            background: var(--color-surface);
-            color: var(--color-muted);
-            border: 1px solid var(--color-border);
-        }
-        .btn-secondary:hover {
-            background: #f1f5f9;
-            color: var(--color-text);
-            border-color: var(--color-border-hover);
-        }
-        .btn-danger {
-            background: var(--color-danger);
-            color: #fff;
-        }
-        .btn-danger:hover {
-            background: #dc2626;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-        }
-        .btn-warning {
-            background: #f59e0b;
-            color: #fff;
-        }
-        .btn-warning:hover {
-            background: #d97706;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
-        }
-        .btn-sm {
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 6px;
-        }
-
-        /* TABLA */
-        .table-container {
-            overflow-x: auto;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--color-border);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            text-align: left;
-        }
-        thead {
-            background: #f8fafc;
-            border-bottom: 1px solid var(--color-border);
-        }
-        th {
-            padding: 14px 16px;
-            font-weight: 800;
-            color: var(--color-muted);
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.8px;
-        }
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--color-border);
-            color: var(--color-text);
-            font-weight: 500;
-        }
-        tbody tr {
-            transition: background 0.15s;
-        }
-        tbody tr:hover {
-            background: #f1f5f9;
-        }
+        /* TABLE */
+        .table-container { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        thead { background: #f8fafc; border-bottom: 1px solid var(--color-border); }
+        th { padding: 14px 16px; font-weight: 800; color: var(--color-muted); text-transform: uppercase; font-size: 11px; letter-spacing: 0.8px; }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--color-border); color: var(--color-text); font-weight: 500; }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: #f1f5f9; }
 
         /* BADGES */
-        .badge {
-            padding: 4px 10px;
-            border-radius: 99px;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .badge-success {
-            background: var(--color-success-light);
-            color: #065f46;
-        }
-        .badge-danger {
-            background: var(--color-danger-light);
-            color: #991b1b;
-        }
-        .badge-warning {
-            background: var(--color-warning-light);
-            color: #92400e;
-        }
-        .badge-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
+        .badge { padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+        .badge-success { background: var(--color-success-light); color: #065f46; }
+        .badge-danger { background: var(--color-danger-light); color: #991b1b; }
+        .badge-warning { background: var(--color-warning-light); color: #92400e; }
+        .badge-info { background: var(--color-primary-light); color: #1e40af; }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
         .badge-success .badge-dot { background: var(--color-success); }
         .badge-danger .badge-dot { background: var(--color-danger); }
         .badge-warning .badge-dot { background: var(--color-warning); }
+        .badge-info .badge-dot { background: var(--color-primary); }
 
-        .actions {
-            display: flex;
-            gap: 6px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 48px 16px;
-            color: var(--color-muted);
-        }
-        .empty-state i {
-            font-size: 32px;
-            color: var(--color-subtle);
-            margin-bottom: 12px;
-            display: block;
-        }
+        .actions { display: flex; gap: 6px; }
+        .empty-state { text-align: center; padding: 48px 16px; color: var(--color-muted); }
+        .empty-state i { font-size: 32px; color: var(--color-subtle); margin-bottom: 12px; display: block; }
 
-        /* PAGINACIÓN */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--color-border);
-        }
-        .pagination a, .pagination span.nav-page {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 34px;
-            height: 34px;
-            padding: 0 6px;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-sm);
-            text-decoration: none;
-            color: var(--color-muted);
-            font-weight: 700;
-            font-size: 13px;
-            transition: all 0.2s;
-            background: var(--color-surface);
-        }
-        .pagination a:hover {
-            background: #f1f5f9;
-            color: var(--color-text);
-            border-color: var(--color-border-hover);
-        }
-        .pagination .active {
-            background: var(--color-primary);
-            color: #fff;
-            border-color: var(--color-primary);
-            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-        }
-        .pagination .disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-            background: #f1f5f9;
-        }
+        /* PAGINATION */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--color-border); }
+        .pagination a, .pagination span.nav-page { display: flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; padding: 0 6px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); text-decoration: none; color: var(--color-muted); font-weight: 700; font-size: 13px; transition: all 0.2s; background: var(--color-surface); }
+        .pagination a:hover { background: #f1f5f9; color: var(--color-text); border-color: var(--color-border-hover); }
+        .pagination .active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2); }
+        .pagination .disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; background: #f1f5f9; }
 
         /* TOAST NOTIFICATIONS */
-        .alert {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            padding: 14px 20px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 13px;
-            display: none;
-            z-index: 2000;
-            box-shadow: var(--shadow-overlay);
-            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-            max-width: 340px;
-            border-left: 4px solid transparent;
-            background: #ffffff;
-            color: #0f172a;
-            border-top: 1px solid var(--color-border);
-            border-right: 1px solid var(--color-border);
-            border-bottom: 1px solid var(--color-border);
-        }
-        .alert.show {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .alert-success {
-            border-left-color: var(--color-success);
-        }
-        .alert-error {
-            border-left-color: var(--color-danger);
-        }
+        .toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: var(--radius-sm); background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--shadow-overlay); font-size: 13px; font-weight: 600; color: var(--color-text); animation: toastSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1) both; pointer-events: auto; min-width: 320px; max-width: 400px; position: relative; overflow: hidden; }
+        .toast::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+        .toast.success { background: var(--color-success-light); border-left: none; }
+        .toast.success::before { background: var(--color-success); }
+        .toast.error { background: var(--color-danger-light); border-left: none; }
+        .toast.error::before { background: var(--color-danger); }
+        .toast.warning { background: var(--color-warning-light); border-left: none; }
+        .toast.warning::before { background: var(--color-warning); }
+        .toast.info { background: var(--color-primary-light); border-left: none; }
+        .toast.info::before { background: var(--color-primary); }
+        .toast i { font-size: 18px; flex-shrink: 0; }
+        .toast.success i { color: var(--color-success); }
+        .toast.error i { color: var(--color-danger); }
+        .toast.warning i { color: var(--color-warning); }
+        .toast.info i { color: var(--color-primary); }
+        .toast-message { flex: 1; }
+        .toast-close { background: none; border: none; cursor: pointer; color: var(--color-muted); padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .toast-close:hover { background: rgba(0,0,0,0.05); color: var(--color-text); }
 
-        /* MODALES ELEGANTES */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.3);
-            backdrop-filter: blur(4px);
-            justify-content: center;
-            align-items: center;
-            z-index: 1500;
-            animation: fadeIn 0.2s ease;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: #fff;
-            padding: 28px;
-            border-radius: var(--radius);
-            width: 100%;
-            max-width: 440px;
-            box-shadow: var(--shadow-overlay);
-            animation: modalScale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-            border: 1px solid var(--color-border);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .modal-header h3 {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--color-text);
-            letter-spacing: -0.3px;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--color-subtle);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .modal-close:hover {
-            background: #f1f5f9;
-            color: var(--color-text);
-        }
+        /* MODALS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1500; animation: fadeIn 0.2s ease; }
+        .modal.active { display: flex; }
+        .modal-content { background: #fff; padding: 28px; border-radius: var(--radius); width: 100%; max-width: 440px; box-shadow: var(--shadow-overlay); animation: modalScale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; border: 1px solid var(--color-border); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--color-border); }
+        .modal-header h3 { font-size: 16px; font-weight: 800; color: var(--color-text); letter-spacing: -0.3px; }
+        .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--color-subtle); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .modal-close:hover { background: #f1f5f9; color: var(--color-text); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--color-text); font-size: 13px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 13px; font-family: inherit; font-weight: 600; color: var(--color-text); transition: all 0.2s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); }
+        .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+        .modal-delete-body { text-align: center; padding: 12px 0; }
+        .modal-delete-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--color-danger-light); color: var(--color-danger); display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px; }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: var(--color-text);
-            font-size: 13px;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-family: inherit;
-            font-weight: 600;
-            color: var(--color-text);
-            transition: all 0.2s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-        }
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--color-border);
-        }
+        /* OVERLAY */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 950; }
 
-        .modal-delete-body {
-            text-align: center;
-            padding: 12px 0;
-        }
-        .modal-delete-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--color-danger-light);
-            color: var(--color-danger);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin: 0 auto 16px;
-        }
-
-        /* OVERLAY PARA MÓVIL */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(4px);
-            z-index: 950;
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (min-width: 1201px) {
-            .sidebar-container { transform: translateX(0) !important; }
-            .main-wrapper { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); }
-            .hamburger { display: none !important; }
-        }
-
-        @media (min-width: 993px) and (max-width: 1200px) {
-            .sidebar-container { transform: translateX(0) !important; }
-            .main-wrapper { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); }
-            .hamburger { display: none !important; }
-        }
-
-        @media (max-width: 992px) {
-            .sidebar-container { transform: translateX(-100%); }
-            .sidebar-container.open { transform: translateX(0); }
-            .sidebar-overlay.open { display: block; }
-            .main-wrapper { margin-left: 0; width: 100%; }
-            .hamburger { display: inline-flex !important; }
-            .topbar { padding: 0 16px; }
-            .main-body { padding: 20px; }
-            .filters { grid-template-columns: 1fr; }
-            .filter-actions { flex-direction: column; }
-            .btn { width: 100%; }
-            .actions { flex-direction: column; }
-        }
-
-        @media (max-width: 480px) {
-            .topbar-title { font-size: 14px; }
-            .stat-value { font-size: 26px; }
-            .box { padding: 16px 14px; }
-            .box-title { font-size: 13px; }
-            .box-desc { font-size: 11px; }
-        }
+        /* RESPONSIVE */
+        @media (min-width: 1201px) { .sidebar-container { transform: translateX(0) !important; } .main-wrapper { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); } .hamburger { display: none !important; } }
+        @media (min-width: 993px) and (max-width: 1200px) { .sidebar-container { transform: translateX(0) !important; } .main-wrapper { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); } .hamburger { display: none !important; } }
+        @media (max-width: 992px) { .sidebar-container { transform: translateX(-100%); } .sidebar-container.open { transform: translateX(0); } .sidebar-overlay.open { display: block; } .main-wrapper { margin-left: 0; width: 100%; } .hamburger { display: inline-flex !important; } .topbar { padding: 0 16px; } .main-body { padding: 20px; } .filters { grid-template-columns: 1fr; } .filter-actions { flex-direction: column; } .btn { width: 100%; } .actions { flex-direction: column; } }
+        @media (max-width: 480px) { .topbar-title { font-size: 14px; } .box { padding: 16px 14px; } .box-title { font-size: 13px; } .box-desc { font-size: 11px; } }
     </style>
 </head>
 <body>
@@ -672,7 +169,7 @@
 <!-- Overlay para móvil -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-<!-- SIDEBAR (IDÉNTICO AL DASHBOARD) -->
+<!-- SIDEBAR -->
 <aside class="sidebar-container" id="sidebar">
     <div class="sidebar-brand">
         <div class="brand-icon"><i class="ti ti-shield-check"></i></div>
@@ -681,37 +178,19 @@
             <div class="brand-sub">Sistema administrativo</div>
         </div>
     </div>
-
     <nav class="sidebar-nav">
         <div class="nav-section-label">Módulos</div>
-
-        <a href="/admin/dashboard" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active'">
-            <i class="ti ti-dashboard"></i><span>Dashboard</span>
-        </a>
-        <a href="/admin/rooms" class="nav-item active" th:classappend="${activePage == 'rooms'} ? 'active'">
-            <i class="ti ti-building"></i><span>Habitaciones</span>
-        </a>
-        <a href="/admin/users" class="nav-item" th:classappend="${activePage == 'users'} ? 'active'">
-            <i class="ti ti-users"></i><span>Usuarios</span>
-        </a>
-        <a href="/admin/reservations" class="nav-item" th:classappend="${activePage == 'reservations'} ? 'active'">
-            <i class="ti ti-calendar-event"></i><span>Reservas</span>
-        </a>
-        <a href="/admin/stays" class="nav-item" th:classappend="${activePage == 'stays'} ? 'active'">
-            <i class="ti ti-bed"></i><span>Estadías</span>
-        </a>
-        <a href="/admin/services" class="nav-item" th:classappend="${activePage == 'services'} ? 'active'">
-            <i class="ti ti-receipt"></i><span>Servicios extra</span>
-        </a>
+        <a href="/admin/dashboard" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active'"><i class="ti ti-dashboard"></i><span>Dashboard</span></a>
+        <a href="/admin/rooms" class="nav-item active" th:classappend="${activePage == 'rooms'} ? 'active'"><i class="ti ti-building"></i><span>Habitaciones</span></a>
+        <a href="/admin/users" class="nav-item" th:classappend="${activePage == 'users'} ? 'active'"><i class="ti ti-users"></i><span>Usuarios</span></a>
+        <a href="/admin/reservations" class="nav-item" th:classappend="${activePage == 'reservations'} ? 'active'"><i class="ti ti-calendar-event"></i><span>Reservas</span></a>
+        <a href="/admin/stays" class="nav-item" th:classappend="${activePage == 'stays'} ? 'active'"><i class="ti ti-bed"></i><span>Estadías</span></a>
+        <a href="/admin/services" class="nav-item" th:classappend="${activePage == 'services'} ? 'active'"><i class="ti ti-receipt"></i><span>Servicios extra</span></a>
     </nav>
-
     <div class="sidebar-footer">
         <div class="user-card">
             <div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail, 0, 1))}">A</div>
-            <div style="flex: 1; min-width: 0;">
-                <div class="user-name" th:text="${userEmail}">admin@hotel.com</div>
-                <div class="user-role">Administrador</div>
-            </div>
+            <div style="flex: 1; min-width: 0;"><div class="user-name" th:text="${userEmail}">admin@hotel.com</div><div class="user-role">Administrador</div></div>
             <i class="ti ti-dots-vertical" style="font-size: 15px; color: var(--color-subtle)"></i>
         </div>
         <a href="/logout" class="logout"><i class="ti ti-logout"></i><span>Cerrar sesión</span></a>
@@ -721,24 +200,16 @@
 <!-- CONTENIDO PRINCIPAL -->
 <div class="main-wrapper">
     <header class="topbar">
-        <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Abrir menú">
-            <i class="ti ti-menu-2"></i>
-        </button>
-        <span class="topbar-title">
-            <i class="ti ti-building"></i>
-            Mantenimiento de Habitaciones
-        </span>
+        <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Abrir menú"><i class="ti ti-menu-2"></i></button>
+        <span class="topbar-title"><i class="ti ti-building"></i> Mantenimiento de Habitaciones</span>
     </header>
-
     <main class="main-body">
-        <!-- Toast Notifications -->
-        <div class="alert alert-success" id="alertBox" th:if="${msg}">
-            <i class="ti ti-circle-check" style="font-size:18px;color:var(--color-success)"></i>
-            <span th:text="${msg}">Operación realizada con éxito</span>
-        </div>
-        <div class="alert alert-error" id="errorBox" th:if="${error}">
-            <i class="ti ti-circle-x" style="font-size:18px;color:var(--color-danger)"></i>
-            <span th:text="${error}">Ha ocurrido un error</span>
+        <!-- ✅ Toast Container + Flash Messages Bridge -->
+        <div class="toast-container" id="toastContainer"></div>
+        <div id="flashMessages"
+             th:data-msg="${msg}"
+             th:data-error="${error}"
+             style="display:none;">
         </div>
 
         <div class="card">
@@ -746,7 +217,7 @@
             <form method="get" class="filters">
                 <div class="filter-group">
                     <label>Número</label>
-                    <input type="text" name="numero" placeholder="Ej: 101" th:value="${numero}">
+                    <input type="text" name="numero" placeholder="Ej: 201" th:value="${numero}">
                 </div>
                 <div class="filter-group">
                     <label>Tipo</label>
@@ -767,20 +238,14 @@
                     </select>
                 </div>
                 <div class="filter-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-search"></i> Filtrar
-                    </button>
-                    <a href="/admin/rooms" class="btn btn-secondary">
-                        <i class="ti ti-refresh"></i> Limpiar
-                    </a>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-search"></i> Filtrar</button>
+                    <a href="/admin/rooms" class="btn btn-secondary"><i class="ti ti-refresh"></i> Limpiar</a>
                 </div>
             </form>
 
-            <!-- Botón Nueva -->
+            <!-- Botón Nuevo -->
             <div style="text-align: right; margin-bottom: 16px;">
-                <button type="button" onclick="openCreateModal()" class="btn btn-primary">
-                    <i class="ti ti-plus"></i> Nueva Habitación
-                </button>
+                <button type="button" onclick="openCreateModal()" class="btn btn-primary"><i class="ti ti-plus"></i> Nueva Habitación</button>
             </div>
 
             <!-- Tabla -->
@@ -791,7 +256,7 @@
                         <th>ID</th>
                         <th>Número</th>
                         <th>Tipo</th>
-                        <th>Precio</th>
+                        <th>Precio/Noche</th>
                         <th>Estado</th>
                         <th style="text-align:center;">Acciones</th>
                     </tr>
@@ -803,15 +268,9 @@
                         <td th:text="${r.tipo}"></td>
                         <td th:text="'$' + ${#numbers.formatDecimal(r.precioNoche,1,2)}" style="color:var(--color-primary);font-weight:700;"></td>
                         <td>
-                                <span th:if="${r.estado=='Disponible'}" class="badge badge-success">
-                                    <span class="badge-dot"></span>Disponible
-                                </span>
-                            <span th:if="${r.estado=='Ocupada'}" class="badge badge-danger">
-                                    <span class="badge-dot"></span>Ocupada
-                                </span>
-                            <span th:if="${r.estado=='Mantenimiento'}" class="badge badge-warning">
-                                    <span class="badge-dot"></span>Mantenimiento
-                                </span>
+                            <span th:if="${r.estado=='Disponible'}" class="badge badge-success"><span class="badge-dot"></span>Disponible</span>
+                            <span th:if="${r.estado=='Ocupada'}" class="badge badge-danger"><span class="badge-dot"></span>Ocupada</span>
+                            <span th:if="${r.estado=='Mantenimiento'}" class="badge badge-warning"><span class="badge-dot"></span>Mantenimiento</span>
                         </td>
                         <td style="text-align:center;">
                             <div class="actions" style="justify-content:center;">
@@ -827,7 +286,6 @@
                                 <button type="button" class="btn btn-secondary btn-sm" style="color:var(--color-danger);"
                                         th:data-id="${r.id}"
                                         th:data-numero="${r.numero}"
-                                        th:data-tipo="${r.tipo}"
                                         onclick="openDeleteModalFromData(this)">
                                     <i class="ti ti-trash"></i>
                                 </button>
@@ -836,7 +294,7 @@
                     </tr>
                     <tr th:if="${rooms.empty}">
                         <td colspan="6" class="empty-state">
-                            <i class="ti ti-building-broadcast-tower"></i>
+                            <i class="ti ti-building"></i>
                             <p>No se encontraron habitaciones registradas</p>
                         </td>
                     </tr>
@@ -846,86 +304,51 @@
 
             <!-- Paginación -->
             <div class="pagination" th:if="${totalPages > 1}">
-                <a th:href="@{/admin/rooms(page=0, numero=${numero}, tipo=${tipo}, estado=${estado})}"
-                   th:classappend="${currentPage==0}?'disabled':''"
-                   th:if="${currentPage>0}">
-                    <i class="ti ti-chevrons-left"></i>
-                </a>
-                <a th:href="@{/admin/rooms(page=${currentPage-1}, numero=${numero}, tipo=${tipo}, estado=${estado})}"
-                   th:classappend="${currentPage==0}?'disabled':''"
-                   th:if="${currentPage>0}">
-                    <i class="ti ti-chevron-left"></i>
-                </a>
-
+                <a th:href="@{/admin/rooms(page=0, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==0}?'disabled':''" th:if="${currentPage>0}"><i class="ti ti-chevrons-left"></i></a>
+                <a th:href="@{/admin/rooms(page=${currentPage-1}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==0}?'disabled':''" th:if="${currentPage>0}"><i class="ti ti-chevron-left"></i></a>
                 <span th:each="i : ${#numbers.sequence(0, totalPages-1)}">
-                    <a th:if="${totalPages<=7 || i==0 || i==totalPages-1 || (i>=currentPage-1 && i<=currentPage+1)}"
-                       th:href="@{/admin/rooms(page=${i}, numero=${numero}, tipo=${tipo}, estado=${estado})}"
-                       th:text="${i+1}"
-                       th:classappend="${i==currentPage}?'active':''"></a>
+                    <a th:if="${totalPages<=7 || i==0 || i==totalPages-1 || (i>=currentPage-1 && i<=currentPage+1)}" th:href="@{/admin/rooms(page=${i}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:text="${i+1}" th:classappend="${i==currentPage}?'active':''"></a>
                     <span class="nav-page disabled" th:if="${i==1 && currentPage>3 && totalPages>7}">...</span>
                     <span class="nav-page disabled" th:if="${i==totalPages-2 && currentPage<totalPages-4 && totalPages>7}">...</span>
                 </span>
-
-                <a th:href="@{/admin/rooms(page=${currentPage+1}, numero=${numero}, tipo=${tipo}, estado=${estado})}"
-                   th:classappend="${currentPage==totalPages-1}?'disabled':''"
-                   th:if="${currentPage<totalPages-1}">
-                    <i class="ti ti-chevron-right"></i>
-                </a>
-                <a th:href="@{/admin/rooms(page=${totalPages-1}, numero=${numero}, tipo=${tipo}, estado=${estado})}"
-                   th:classappend="${currentPage==totalPages-1}?'disabled':''"
-                   th:if="${currentPage<totalPages-1}">
-                    <i class="ti ti-chevrons-right"></i>
-                </a>
+                <a th:href="@{/admin/rooms(page=${currentPage+1}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==totalPages-1}?'disabled':''" th:if="${currentPage<totalPages-1}"><i class="ti ti-chevron-right"></i></a>
+                <a th:href="@{/admin/rooms(page=${totalPages-1}, numero=${numero}, tipo=${tipo}, estado=${estado})}" th:classappend="${currentPage==totalPages-1}?'disabled':''" th:if="${currentPage<totalPages-1}"><i class="ti ti-chevrons-right"></i></a>
             </div>
         </div>
     </main>
 </div>
 
-<!-- MODAL CREAR / EDITAR (ELEGANTE) -->
+<!-- MODAL CREAR / EDITAR -->
 <div id="modalForm" class="modal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 id="modalTitle">Nueva Habitación</h3>
-            <button type="button" class="modal-close" onclick="closeModal()">
-                <i class="ti ti-x"></i>
-            </button>
+            <button type="button" class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
         </div>
         <form th:action="@{/admin/rooms/save}" th:object="${room}" method="post" id="roomForm">
             <input type="hidden" th:field="*{id}" id="roomId">
 
             <div class="form-group">
                 <label>Número de Habitación</label>
-                <input type="text" th:field="*{numero}" placeholder="Ej: 101" pattern="[0-9A-Za-z]+" required maxlength="10">
+                <input type="text" th:field="*{numero}" placeholder="Ej: 201" required maxlength="10">
             </div>
 
             <div class="form-group">
-                <label>Tipo de Categoría</label>
+                <label>Tipo de Habitación</label>
                 <select th:field="*{tipo}" required>
-                    <option value="">-- Seleccionar --</option>
-                    <optgroup label="Individuales">
-                        <option value="Individual Estándar">Individual Estándar</option>
-                        <option value="Individual Deluxe">Individual Deluxe</option>
-                        <option value="Individual Económica">Individual Económica</option>
-                    </optgroup>
-                    <optgroup label="Dobles">
-                        <option value="Doble Estándar">Doble Estándar</option>
-                        <option value="Doble Deluxe">Doble Deluxe</option>
-                    </optgroup>
-                    <optgroup label="Suites">
-                        <option value="Suite Junior">Suite Junior</option>
-                        <option value="Suite Executive">Suite Ejecutiva</option>
-                        <option value="Suite Presidencial">Suite Presidencial</option>
-                    </optgroup>
+                    <option value="Individual">Individual</option>
+                    <option value="Doble">Doble</option>
+                    <option value="Suite">Suite</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label>Precio por Noche (USD)</label>
-                <input type="number" step="0.01" min="0" th:field="*{precioNoche}" placeholder="0.00" required>
+                <input type="number" step="0.01" th:field="*{precioNoche}" placeholder="0.00" required min="0">
             </div>
 
             <div class="form-group">
-                <label>Estado de Disponibilidad</label>
+                <label>Estado</label>
                 <select th:field="*{estado}" required>
                     <option value="Disponible">Disponible</option>
                     <option value="Ocupada">Ocupada</option>
@@ -941,18 +364,13 @@
     </div>
 </div>
 
-<!-- MODAL ELIMINAR (ELEGANTE) -->
+<!-- MODAL ELIMINAR -->
 <div id="modalDelete" class="modal">
     <div class="modal-content" style="max-width:400px;">
         <div class="modal-delete-body">
-            <div class="modal-delete-icon">
-                <i class="ti ti-alert-triangle"></i>
-            </div>
+            <div class="modal-delete-icon"><i class="ti ti-alert-triangle"></i></div>
             <h3 style="font-weight:800;color:var(--color-text);margin-bottom:8px;font-size:16px;">¿Confirmar eliminación?</h3>
-            <p style="color:var(--color-muted);font-size:13px;line-height:1.5;margin-bottom:16px;">
-                Esta acción eliminará de forma permanente el registro del sistema y no se puede deshacer.
-                <br><strong id="deleteRoomInfo" style="color:var(--color-text);display:block;margin-top:8px;"></strong>
-            </p>
+            <p style="color:var(--color-muted);font-size:13px;line-height:1.5;margin-bottom:16px;">Esta acción eliminará de forma permanente el registro del sistema y no se puede deshacer.<br><strong id="deleteRoomInfo" style="color:var(--color-text);display:block;margin-top:8px;"></strong></p>
         </div>
         <form id="deleteForm" method="get">
             <div style="display:flex;gap:10px;justify-content:stretch;">
@@ -965,65 +383,112 @@
 
 <!-- JAVASCRIPT -->
 <script>
-    // Toggle Sidebar
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('open');
         document.getElementById('sidebarOverlay').classList.toggle('open');
     }
 
-    // Cerrar sidebar al hacer clic fuera en móvil
     document.addEventListener('click', function(e) {
-        const sidebar = document.getElementById('sidebar');
-        const hamburger = document.getElementById('hamburger');
-        if (window.innerWidth <= 992 &&
-            !sidebar.contains(e.target) &&
-            !hamburger.contains(e.target) &&
-            sidebar.classList.contains('open')) {
+        const sb = document.getElementById('sidebar'), hb = document.getElementById('hamburger');
+        if (window.innerWidth <= 992 && !sb.contains(e.target) && !hb.contains(e.target) && sb.classList.contains('open'))
             toggleSidebar();
+    });
+
+    // ✅ Toast Notifications System
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+
+        const icons = {
+            success: 'ti-circle-check',
+            error: 'ti-circle-x',
+            warning: 'ti-alert-triangle',
+            info: 'ti-info-circle'
+        };
+
+        toast.innerHTML = `
+            <i class="ti ${icons[type]}"></i>
+            <span class="toast-message">${message}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">
+                <i class="ti ti-x" style="font-size:16px;"></i>
+            </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Auto-remove after 4 seconds
+        setTimeout(() => {
+            toast.style.animation = 'toastExit 0.3s cubic-bezier(0.4, 0, 0.2, 1) both';
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    // ✅ Show toast on page load - LEER DESDE ATRIBUTOS DATA
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashDiv = document.getElementById('flashMessages');
+        const msg = flashDiv?.getAttribute('data-msg') || '';
+        const error = flashDiv?.getAttribute('data-error') || '';
+
+        console.log('📩 Flash messages:', { msg, error });
+
+        if (msg) {
+            const msgLower = msg.toLowerCase();
+            if (msgLower.includes('creada') || msgLower.includes('registrada')) {
+                showToast('✅ Habitación creada correctamente', 'success');
+            } else if (msgLower.includes('actualizada') || msgLower.includes('editada')) {
+                showToast('✅ Habitación actualizada correctamente', 'success');
+            } else if (msgLower.includes('eliminada')) {
+                showToast('🗑️ Habitación eliminada correctamente', 'warning');
+            } else {
+                showToast(msg, 'success');
+            }
+        }
+        if (error) {
+            showToast('❌ ' + error, 'error');
         }
     });
 
-    // Toast Notifications
-    const alertBox = document.getElementById('alertBox');
-    if(alertBox && alertBox.classList.contains('show')) {
-        setTimeout(() => {
-            alertBox.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-            alertBox.style.opacity = "0";
-            alertBox.style.transform = "translateY(-10px)";
-            setTimeout(() => alertBox.classList.remove('show'), 300);
-        }, 2500);
-    }
-
-    const errorBox = document.getElementById('errorBox');
-    if(errorBox && errorBox.classList.contains('show')) {
-        setTimeout(() => {
-            errorBox.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-            errorBox.style.opacity = "0";
-            errorBox.style.transform = "translateY(-10px)";
-            setTimeout(() => errorBox.classList.remove('show'), 300);
-        }, 3000);
-    }
-
     // Modals
-    const modalForm = document.getElementById('modalForm');
-    const modalDelete = document.getElementById('modalDelete');
-    const deleteForm = document.getElementById('deleteForm');
+    const modalForm = document.getElementById('modalForm'),
+          modalDelete = document.getElementById('modalDelete'),
+          deleteForm = document.getElementById('deleteForm');
 
     function openCreateModal() {
         document.getElementById('roomForm').reset();
-        document.getElementById('roomId').value = '';
-        document.getElementById('modalTitle').textContent = 'Nueva Habitación';
+        document.getElementById('roomId').value='';
+        document.getElementById('modalTitle').textContent='Nueva Habitación';
         modalForm.classList.add('active');
     }
 
+    // ✅ FUNCIÓN PARA ABRIR MODAL DE EDICIÓN DESDE DATA ATTRIBUTES
     function openEditModalFromData(btn) {
-        openEditModal(btn.dataset.id, btn.dataset.numero, btn.dataset.tipo, btn.dataset.precio, btn.dataset.estado);
+        openEditModal(
+            btn.dataset.id,
+            btn.dataset.numero,
+            btn.dataset.tipo,
+            btn.dataset.precio,
+            btn.dataset.estado
+        );
     }
 
+    // ✅ FUNCIÓN PARA LLENAR EL MODAL DE EDICIÓN CON VALORES CORRECTOS
     function openEditModal(id, numero, tipo, precio, estado) {
         document.getElementById('roomId').value = id;
         document.getElementById('roomForm').querySelector('[name="numero"]').value = numero;
-        document.getElementById('roomForm').querySelector('[name="tipo"]').value = tipo;
+
+        // ✅ CORRECCIÓN: Seleccionar el tipo de habitación correctamente
+        const tipoSelect = document.getElementById('roomForm').querySelector('[name="tipo"]');
+        const tipoNormalizado = tipo ? String(tipo).trim() : '';
+
+        // Iterar sobre las opciones para encontrar la que coincide (case-insensitive)
+        for (let option of tipoSelect.options) {
+            if (option.value.toLowerCase() === tipoNormalizado.toLowerCase()) {
+                tipoSelect.value = option.value;
+                break;
+            }
+        }
+
         document.getElementById('roomForm').querySelector('[name="precioNoche"]').value = precio;
         document.getElementById('roomForm').querySelector('[name="estado"]').value = estado;
         document.getElementById('modalTitle').textContent = 'Editar Habitación';
@@ -1035,7 +500,7 @@
     }
 
     function openDeleteModalFromData(btn) {
-        document.getElementById('deleteRoomInfo').textContent = `Habitación ${btn.dataset.numero} - ${btn.dataset.tipo}`;
+        document.getElementById('deleteRoomInfo').textContent = `Habitación ${btn.dataset.numero}`;
         deleteForm.action = `/admin/rooms/delete/${btn.dataset.id}`;
         modalDelete.classList.add('active');
     }
@@ -1045,35 +510,23 @@
     }
 
     window.onclick = function(e) {
-        if(e.target === modalForm) closeModal();
-        if(e.target === modalDelete) closeDeleteModal();
+        if(e.target===modalForm) closeModal();
+        if(e.target===modalDelete) closeDeleteModal();
     };
 
     document.onkeydown = function(e) {
-        if(e.key === 'Escape') {
+        if(e.key==='Escape') {
             closeModal();
             closeDeleteModal();
         }
     };
 
-    // Validación de formulario
-    document.getElementById('roomForm').onsubmit = function(e) {
-        const precio = parseFloat(document.getElementById('roomForm').querySelector('[name="precioNoche"]').value);
-        if(precio <= 0) {
-            e.preventDefault();
-            alert('El precio por noche especificado debe ser mayor a $0.00');
-            return false;
-        }
-        return true;
-    };
-
-    // Auto-open modal for edit
+    // ✅ Cargar datos si viene de edición vía backend
     const action = /*[[${action}]]*/ '';
     if(action === 'edit') {
         const r = /*[[${room}]]*/ {};
         if(r && r.id) openEditModal(r.id, r.numero, r.tipo, r.precioNoche, r.estado);
     }
 </script>
-
 </body>
 </html>

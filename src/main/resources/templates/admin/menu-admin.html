@@ -380,12 +380,9 @@
     </nav>
     <div class="sidebar-footer">
         <div class="user-card">
-            <div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail,0,1))}">A</div>
-            <div style="flex:1;min-width:0">
-                <div class="user-name" th:text="${userEmail}">admin@hotel.com</div>
-                <div class="user-role">Administrador</div>
-            </div>
-            <i class="ti ti-dots-vertical" style="font-size:15px;color:var(--color-subtle)"></i>
+            <div class="user-avatar" th:text="${#strings.toUpperCase(#strings.substring(userEmail, 0, 1))}">A</div>
+            <div style="flex: 1; min-width: 0;"><div class="user-name" th:text="${userEmail}">admin@hotel.com</div><div class="user-role">Administrador</div></div>
+            <i class="ti ti-dots-vertical" style="font-size: 15px; color: var(--color-subtle)"></i>
         </div>
         <a href="/logout" class="logout"><i class="ti ti-logout"></i><span>Cerrar sesión</span></a>
     </div>

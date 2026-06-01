@@ -10,4 +10,5 @@ public interface RoomService {
     Optional<Room> findById(Long id);
     Room save(Room room);
     void deleteById(Long id);
+    boolean hasReservations(Long roomId);
 }

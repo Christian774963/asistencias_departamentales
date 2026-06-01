@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface ReservationService {
-    Page<Reservation> findByFilters(String estado, String fechaInicio, String fechaFin, Pageable pageable);
+    Page<Reservation> findByFilters(Long id, String estado, java.time.LocalDate fechaInicio, java.time.LocalDate fechaFin, Pageable pageable);
     Optional<Reservation> findById(Long id);
     Reservation save(Reservation reservation);
     void deleteById(Long id);

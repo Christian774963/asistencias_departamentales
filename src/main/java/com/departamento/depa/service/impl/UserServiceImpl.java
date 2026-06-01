@@ -23,11 +23,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findByFilters(String nombre, String email, String rol, Pageable pageable) {
+    public Page<User> findByFilters(Long id, String nombre, String email, String rol, Pageable pageable) {
         nombre = (nombre == null || nombre.isBlank()) ? null : nombre;
         email = (email == null || email.isBlank()) ? null : email;
         rol = (rol == null || rol.isBlank() || "Todos".equals(rol)) ? null : rol;
-        return userRepository.findByFilters(nombre, email, rol, pageable);
+        return userRepository.findByFilters(id, nombre, email, rol, pageable);
     }
 
     @Override

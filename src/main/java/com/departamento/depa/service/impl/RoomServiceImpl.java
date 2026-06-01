@@ -29,5 +29,7 @@ public class RoomServiceImpl implements RoomService {
     @Override public Optional<Room> findById(Long id) { return repo.findById(id); }
     @Override public Room save(Room r) { return repo.save(r); }
     @Override public void deleteById(Long id) { repo.deleteById(id); }
-
+    public boolean hasReservations(Long roomId) {
+        return repo.hasReservations(roomId) > 0;
+    }
 }

@@ -13,13 +13,32 @@ public class AdditionalServiceServiceImpl implements AdditionalServiceService {
 
     private final AdditionalServiceRepository repo;
 
-    public AdditionalServiceServiceImpl(AdditionalServiceRepository repo) { this.repo = repo; }
-
-    @Override public Page<AdditionalService> findByFilters(Long stayId, Pageable pageable) {
-        return repo.findByFilters(stayId, pageable);
+    public AdditionalServiceServiceImpl(AdditionalServiceRepository repo) {
+        this.repo = repo;
     }
-    @Override public Optional<AdditionalService> findById(Long id) { return repo.findById(id); }
-    @Override public AdditionalService save(AdditionalService s) { return repo.save(s); }
-    @Override public void deleteById(Long id) { repo.deleteById(id); }
-    @Override public long count() { return repo.count(); }
+
+    @Override
+    public Page<AdditionalService> findByFilters(Long stayId, String roomNumero, String serviceName, Pageable pageable) {
+        return repo.findByFilters(stayId, roomNumero, serviceName, pageable);
+    }
+
+    @Override
+    public Optional<AdditionalService> findById(Long id) {
+        return repo.findById(id);
+    }
+
+    @Override
+    public AdditionalService save(AdditionalService s) {
+        return repo.save(s);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public long count() {
+        return repo.count();
+    }
 }

@@ -68,8 +68,21 @@ public class RoomController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirect) {
-        roomService.deleteById(id);
-        redirect.addFlashAttribute("msg", "Habitación eliminada 🗑️");
+        try {
+            //  VALIDAR: ¿La habitación tiene reservas asociadas?
+            if (roomService.hasReservations(id)) {
+                redirect.addFlashAttribute("error",
+                        "No se puede eliminar: La habitación tiene reservas asociadas. Cancela las reservas primero.");
+                return "redirect:/admin/rooms";
+            }
+
+            // Si no tiene reservas, proceder con la eliminación
+            roomService.deleteById(id);
+            redirect.addFlashAttribute("msg", "Habitación eliminada correctamente");
+
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Error al eliminar: " + e.getMessage());
+        }
         return "redirect:/admin/rooms";
     }
 

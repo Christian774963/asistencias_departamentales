@@ -22,4 +22,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     );
     List<Room> findByEstado(String estado);
 
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.room.id = :roomId")
+    long hasReservations(@Param("roomId") Long roomId);
 }

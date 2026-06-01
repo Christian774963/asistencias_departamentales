@@ -13,13 +13,32 @@ public class StayServiceImpl implements StayService {
 
     private final StayRepository repo;
 
-    public StayServiceImpl(StayRepository repo) { this.repo = repo; }
-
-    @Override public Page<Stay> findByFilters(String estado, Pageable pageable) {
-        return repo.findByFilters((estado != null && !estado.isBlank() && !"Todos".equals(estado)) ? estado : null, pageable);
+    public StayServiceImpl(StayRepository repo) {
+        this.repo = repo;
     }
-    @Override public Optional<Stay> findById(Long id) { return repo.findById(id); }
-    @Override public Stay save(Stay s) { return repo.save(s); }
-    @Override public void deleteById(Long id) { repo.deleteById(id); }
-    @Override public long count() { return repo.count(); }
+
+    @Override
+    public Page<Stay> findByFilters(Long id, String estado, Pageable pageable) {
+        return repo.findByFilters(id, estado, pageable);
+    }
+
+    @Override
+    public Optional<Stay> findById(Long id) {
+        return repo.findById(id);
+    }
+
+    @Override
+    public Stay save(Stay stay) {
+        return repo.save(stay);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public long count() {
+        return repo.count();
+    }
 }
