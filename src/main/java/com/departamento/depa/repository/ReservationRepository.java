@@ -29,4 +29,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByEstado(String estado);
     boolean existsByUserId(Long userId);
+
+    @org.springframework.data.jpa.repository.Query(
+            value = "SELECT id_reserva, id_usuario, id_habitacion, id_estadia, id_servicio FROM v_reporte_facturacion_estadia",
+            nativeQuery = true
+    )
+    java.util.List<Object[]> obtenerDatosVistaFacturacion();
 }

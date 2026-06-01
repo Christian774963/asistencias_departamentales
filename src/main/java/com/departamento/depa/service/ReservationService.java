@@ -11,4 +11,6 @@ public interface ReservationService {
     Reservation save(Reservation reservation);
     void deleteById(Long id);
     long count();
+
+    java.util.List<com.departamento.depa.dto.ReporteFacturacionDTO> obtenerReporteFacturacion();
 }
